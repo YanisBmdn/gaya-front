@@ -15,6 +15,7 @@
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "^4.0.0",
+		"@sveltejs/adapter-node": "^5.2.12",
 		"@sveltejs/kit": "^2.16.0",
 		"@sveltejs/vite-plugin-svelte": "^5.0.0",
 		"@tailwindcss/vite": "^4.0.0",
@@ -29,6 +30,8 @@
 		"vite": "^6.0.0"
 	},
 	"dependencies": {
-		"plotly.js-dist": "^3.0.0"
+		"marked": "^15.0.7",
+		"plotly.js-dist": "^3.0.0",
+		"uuid": "^11.1.0"
 	}
 }
