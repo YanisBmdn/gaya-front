@@ -16,15 +16,17 @@ export interface BudgetDistributionData {
     percentage: number;
 }
 
-const JSONL_PATH = path.resolve('src/lib/server/postsurvey.jsonl');
+const PRE_SURVEY_FILE = path.resolve('src/lib/server/presurvey.jsonl');
+const POST_SURVEY_PATH = path.resolve('src/lib/server/postsurvey.jsonl');
 
-export async function appendToJSONL(data: SurveyData): Promise<void> {
+export async function appendToJSONL(data: SurveyData, step: "pre" | "post"): Promise<void> {
     try{
 
         // Read the file if it exists
         let existingData: string[] = [];
         try {
-            const fileContent = await fs.readFile(JSONL_PATH, 'utf-8');
+            const file = step === 'pre' ? PRE_SURVEY_FILE : POST_SURVEY_PATH;
+            const fileContent = await fs.readFile(file, 'utf-8');
             existingData = fileContent.trim().split('\n');
         } catch (err) {
             if (err.code !== 'ENOENT') throw err; // Ignore "file not found" error

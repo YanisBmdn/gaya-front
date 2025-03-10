@@ -1,11 +1,13 @@
 <script lang="ts">
     import { writable, derived } from 'svelte/store';
-    import { page } from '$app/stores'; // Changed from '$app/state' to '$app/stores'
+    import { page } from '$app/state'; // Changed from '$app/state' to '$app/stores'
     import { userDescriptionStore } from '$lib/stores';
-    import { onMount } from 'svelte';
+	import { goto } from '$app/navigation';
 
     // Create a store for allocations with proper initialization
     const allocations = writable([]);
+
+    const surveyStep = page.url.searchParams.get('step');
     
     // Initialize the allocations when userDescriptionStore is loaded
     $: if ($userDescriptionStore.options && $userDescriptionStore.options.length > 0) {
@@ -62,7 +64,7 @@
     // Submit handler
     async function handleSubmit() {
         const submissionData = {
-            id: $page.params.slug, // Fixed from page.params to $page.params
+            id: page.params.slug, // Fixed from page.params to $page.params
             budget: $userDescriptionStore.budget,
             budgetDistribution: $allocations.map((amount, index) => ({
                 category: $userDescriptionStore.options[index],
@@ -79,13 +81,13 @@
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(submissionData)
+            body: JSON.stringify({submissionData, step: surveyStep})
         });
 
         // Handle response (add success/error handling)
         if (response.ok) {
             // Show success message or redirect
-            console.log('Budget allocation submitted successfully');
+            surveyStep === "pre" ? goto(`/${page.params.slug}/chat`) : goto('/end')
         } else {
             // Show error message
             console.error('Failed to submit budget allocation');
@@ -103,7 +105,7 @@
 
 <div class="flex flex-col items-center justify-center gap-8 p-4 bg-slate-900">
     <p class="w-1/2">{$userDescriptionStore.scenario || 'Loading scenario...'}</p>
-    <h2 class="text-2xl font-bold mb-6">Based on the scenario, how would you allocate the budget?</h2>
+    <h2 class="text-2xl font-bold mb-6">{surveyStep === "pre" ? "Based on the scenario, how would you allocate the budget?" : "Based on the scenario and the chat you had with the agent. How would you allocate the budget?"}</h2>
     
     <div class="mb-6">
         <div class="flex justify-between mb-2">

@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { tick } from 'svelte';
-	import { BACKEND_URL } from '$env/static/private';
 	import Message from '$lib/components/Message.svelte';
 	import { plotToBase64 } from '$lib/plotly-helper';
 	import { page } from '$app/state';
 	import { marked } from 'marked';
+	import { goto } from '$app/navigation';
 	
 	let messages: Array<{ type: 'user' | 'botMessage' | 'botImage'; message: string }> = $state([]);
 	let inputValue: string = $state('');
@@ -105,7 +105,7 @@
 	  {/each}
 	</div>
 	
-	<form on:submit|preventDefault={submit} class="flex w-1/2">
+	<form onsubmit={submit} class="flex w-1/2">
 	  <input
 		bind:value={inputValue}
 		type="text"
@@ -120,5 +120,9 @@
 	  >
 		{isProcessing ? 'Processing...' : 'Chat'}
 	  </button>
+
+		<button onclick={() => goto(`/${page.params.slug}/survey?step=post`)} class="rounded-lg bg-blue-500 text-white p-2 cursor-pointer">
+			To survey
+		</button>
 	</form>
   </div>

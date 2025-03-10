@@ -37,7 +37,7 @@
      });
      
      userDescriptionStore.set(await response.json());
-     goto(`/${id}/survey`);
+     goto(`/${id}/survey?step=pre`);
     };
     
     const ageGroups = ['Under 18', '18-24', '25-34', '35-44', '45-54', '55-64', '65-74', '75+'];
