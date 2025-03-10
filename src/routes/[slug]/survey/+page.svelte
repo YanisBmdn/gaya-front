@@ -1,21 +1,22 @@
 <script lang="ts">
     import { writable, derived } from 'svelte/store';
-    import { page } from '$app/state';
+    import { page } from '$app/stores'; // Changed from '$app/state' to '$app/stores'
+    import { userDescriptionStore } from '$lib/stores';
+    import { onMount } from 'svelte';
 
-    // Configuration
-    export let totalBudget = 10000000; // $10 million default
-    export let categories = [
-        'Infrastructure',
-        'Education', 
-        'Healthcare', 
-        'Environment', 
-        'Social Services'
-    ];
-
-    // Create a store for allocations
-    const allocations = writable(
-        categories.map(() => 0)
-    );
+    // Create a store for allocations with proper initialization
+    const allocations = writable([]);
+    
+    // Initialize the allocations when userDescriptionStore is loaded
+    $: if ($userDescriptionStore.options && $userDescriptionStore.options.length > 0) {
+        // Only initialize if not already set
+        allocations.update(current => {
+            if (current.length === 0) {
+                return $userDescriptionStore.options.map(() => 0);
+            }
+            return current;
+        });
+    }
 
     // Derived store to calculate total allocated
     const totalAllocated = derived(allocations, $allocs => 
@@ -28,9 +29,16 @@
     // Explanation store
     const explanation = writable('');
 
-    // Function to update allocations by percentage
-    function updateAllocation(index: number, percentage: number) {
-        const amount = Math.round(totalBudget * (percentage / 100));
+    // Calculate percentages from allocations
+    $: percentages = $allocations.map(amount => 
+        $userDescriptionStore.budget ? Math.round((amount / $userDescriptionStore.budget) * 100) : 0
+    );
+
+    // Function to update allocation when percentage changes
+    function updateAllocationByPercentage(index: number, percentage: number) {
+        if (!$userDescriptionStore.budget) return;
+        
+        const amount = Math.round($userDescriptionStore.budget * (percentage / 100));
         
         allocations.update(currentAllocations => {
             const newAllocations = [...currentAllocations];
@@ -40,28 +48,24 @@
                 i === index ? sum : sum + val, 0);
             
             // Ensure total doesn't exceed budget
-            if (otherTotal + amount <= totalBudget) {
+            if (otherTotal + amount <= $userDescriptionStore.budget) {
                 newAllocations[index] = amount;
             } else {
                 // If it would exceed, set to maximum possible
-                newAllocations[index] = totalBudget - otherTotal;
+                newAllocations[index] = $userDescriptionStore.budget - otherTotal;
             }
             
             return newAllocations;
         });
     }
 
-    $: percentages = $allocations.map(amount => 
-        Math.round((amount / totalBudget) * 100)
-    );
-
     // Submit handler
     async function handleSubmit() {
         const submissionData = {
-            id: page.params.slug,
-            budget: totalBudget,
+            id: $page.params.slug, // Fixed from page.params to $page.params
+            budget: $userDescriptionStore.budget,
             budgetDistribution: $allocations.map((amount, index) => ({
-                category: categories[index],
+                category: $userDescriptionStore.options[index],
                 amount,
                 percentage: percentages[index]
             })),
@@ -77,6 +81,15 @@
             },
             body: JSON.stringify(submissionData)
         });
+
+        // Handle response (add success/error handling)
+        if (response.ok) {
+            // Show success message or redirect
+            console.log('Budget allocation submitted successfully');
+        } else {
+            // Show error message
+            console.error('Failed to submit budget allocation');
+        }
     }
 
     const confidenceLevels = [
@@ -88,57 +101,62 @@
     ];
 </script>
 
-<div class="flex h-screen flex-col items-center justify-center gap-8 p-4">
-    <h2 class="text-2xl font-bold mb-6">Based on the scenario, how would you allocate the budget ?</h2>
+<div class="flex flex-col items-center justify-center gap-8 p-4 bg-slate-900">
+    <p class="w-1/2">{$userDescriptionStore.scenario || 'Loading scenario...'}</p>
+    <h2 class="text-2xl font-bold mb-6">Based on the scenario, how would you allocate the budget?</h2>
     
     <div class="mb-6">
         <div class="flex justify-between mb-2">
             <span>Total Budget:</span>
-            <span>${totalBudget.toLocaleString()}</span>
+            <span>${($userDescriptionStore.budget || 0).toLocaleString()}</span>
         </div>
         <div class="flex justify-between">
             <span>Total Allocated:</span>
             <span 
-                class={$totalAllocated > totalBudget ? 'text-red-500' : 'text-green-500'}
+                class={$totalAllocated > ($userDescriptionStore.budget || 0) ? 'text-red-500' : 'text-green-500'}
             >
                 ${$totalAllocated.toLocaleString()} 
-                ({Math.round(($totalAllocated / totalBudget) * 100)}%)
+                ({$userDescriptionStore.budget ? Math.round(($totalAllocated / $userDescriptionStore.budget) * 100) : 0}%)
             </span>
         </div>
     </div>
 
     <div class="space-y-4 mb-6">
-        {#each categories as category, index}
-            <div class="flex items-center space-x-4">
-                <label class="w-1/3" for={`slider-${index}`}>
-                    {category}
-                </label>
-                <input 
-                    id={`slider-${index}`}
-                    type="range" 
-                    min="0" 
-                    max="100"
-                    step="2"
-                    bind:value={percentages[index]}
-                    on:input={(e) => percentages[index] = updateAllocation(index, e.target.value)}
-                    class="flex-grow"
-                    disabled={$totalAllocated >= totalBudget && $allocations[index] === 0}
-                />
-                <span class="w-42 text-right">
-                    ${$allocations[index].toLocaleString()} 
-                    ({percentages[index]}%)
-                </span>
-            </div>
-        {/each}
+        {#if $userDescriptionStore.options && $userDescriptionStore.options.length > 0}
+            {#each $userDescriptionStore.options as category, index}
+                <div class="flex items-center space-x-4">
+                    <label class="w-1/3" for={`slider-${index}`}>
+                        {category}
+                    </label>
+                    <input 
+                        id={`slider-${index}`}
+                        type="range" 
+                        min="0" 
+                        max="100"
+                        step="2"
+                        value={percentages[index]}
+                        on:input={(e) => updateAllocationByPercentage(index, parseInt(e.target.value))}
+                        class="flex-grow"
+                        disabled={$totalAllocated >= ($userDescriptionStore.budget || 0) && $allocations[index] === 0}
+                    />
+                    <span class="w-42 text-right">
+                        ${($allocations[index] || 0).toLocaleString()} 
+                        ({percentages[index] || 0}%)
+                    </span>
+                </div>
+            {/each}
+        {:else}
+            <p>Loading options...</p>
+        {/if}
     </div>
 
-    <div class="mb-6 w-1/4">
+    <div class="mb-6 w-full md:w-1/2 lg:w-1/4">
         <label class="block mb-2">
             Confidence Level
         </label>
-        <div class="flex justify-between">
+        <div class="flex justify-between flex-wrap">
             {#each confidenceLevels as level}
-                <label class="inline-flex items-center">
+                <label class="inline-flex items-center mb-2">
                     <input
                         type="radio"
                         name="confidence"
@@ -152,7 +170,7 @@
         </div>
     </div>
 
-    <div class="mb-6 w-1/3">
+    <div class="mb-6 w-full md:w-1/2 lg:w-1/3">
         <label class="block mb-2" for="explanation">
             Explanation of Allocation
         </label>
@@ -167,8 +185,8 @@
 
     <button 
         on:click={handleSubmit}
-        class="bg-blue-500 text-white py-2 rounded hover:bg-blue-600 w-1/8"
-        disabled={$totalAllocated > totalBudget}
+        class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+        disabled={$totalAllocated > ($userDescriptionStore.budget || 0)}
     >
         Submit Budget Allocation
     </button>

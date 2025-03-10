@@ -5,7 +5,6 @@
 
 	export let type: 'user' | 'botMessage' | 'botImage';
 	export let message: string;
-	export let id: string;
 
 	let plotDiv: HTMLDivElement;
 

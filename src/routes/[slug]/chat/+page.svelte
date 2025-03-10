@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { tick } from 'svelte';
-	import { fade } from 'svelte/transition';
+	import { BACKEND_URL } from '$env/static/private';
 	import Message from '$lib/components/Message.svelte';
 	import { plotToBase64 } from '$lib/plotly-helper';
 	import { page } from '$app/state';
@@ -28,7 +28,7 @@
 		chatDiv.scrollTop = chatDiv.scrollHeight;
 		
 		// Get visualization
-		const response = await fetch('http://127.0.0.1:8000/test');
+		const response = await fetch(`${BACKEND_URL}/test`);
 		const json = await response.json();
 		
 		// Add visualization message
@@ -54,7 +54,7 @@
 		const base64 = await plotToBase64(lastPlotDiv);
 
 
-		const response2 = await fetch('http://127.0.0.1:8000/chat/description', {
+		const response2 = await fetch(`${BACKEND_URL}/chat/description`, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json'
@@ -83,7 +83,7 @@
 			description += chunk;
 			
 			// Update the message in real-time
-			messages[messages.length - 1].message = marked.parse(description);
+			messages[messages.length - 1].message = await marked.parse(description);
 		}
 		} catch (error) {
 		console.error('Error reading stream:', error);
