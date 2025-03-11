@@ -2,6 +2,7 @@
     import { goto } from '$app/navigation';
     import { v4 as uuidv4 } from 'uuid';
     import { userDescriptionStore } from '$lib/stores';
+    import { _, locale, locales} from 'svelte-i18n';
     
     let userDescription = $state('');
     let userLocation = $state('');
@@ -9,6 +10,8 @@
     let isLoading = $state(false);
     let formError = $state('');
     
+    const lang = [{'value': 'en', 'text': 'English'}, {'value':'jp','text':'日本語'}];
+
     const handleSubmit = async (event: Event) => {
      event.preventDefault();
      
@@ -26,7 +29,8 @@
      const response = await fetch(`api/scenario`, {
        method: 'POST',
        headers: {
-         'Content-Type': 'application/json'
+         'Content-Type': 'application/json',
+         'Accept-Language': $locale || 'en'
        },
        body: JSON.stringify({
          chat_id: id,
@@ -42,9 +46,17 @@
     
     const ageGroups = ['Under 18', '18-24', '25-34', '35-44', '45-54', '55-64', '65-74', '75+'];
    </script>
+
+   <div class="absolute top-4 right-4">
+    <select bind:value={$locale}>
+      {#each $locales as locale}
+        <option value={locale}>{locale}</option>
+      {/each}
+    </select>
+   </div>
    
    <div class="flex h-full flex-col items-center justify-center space-y-8">
-     <h1 class="text-center text-4xl font-bold">Tell Us About Yourself</h1>
+     <h1 class="text-center text-4xl font-bold">{$_('home.userInfo')}</h1>
      
      <form
        onsubmit={handleSubmit}
@@ -58,10 +70,10 @@
        
        <div class="space-y-4">
          <label class="block text-sm font-medium">
-           About You <span class="text-red-400">*</span>
+          {$_('home.userInfo')}<span class="text-red-400">*</span>
            <textarea
              bind:value={userDescription}
-             placeholder="Share your background, skills, and interests..."
+             placeholder={$_("home.userInfoPlaceholder")}
              class="mt-2 h-32 w-full rounded-lg border border-slate-600 bg-slate-700 p-4 focus:border-transparent focus:ring-2 focus:ring-blue-500"
              rows={4}
              required
@@ -69,24 +81,24 @@
          </label>
          
          <label class="block text-sm font-medium">
-           Location <span class="text-red-400">*</span>
+          {$_('home.location')}<span class="text-red-400">*</span>
            <input
              bind:value={userLocation}
              type="text"
-             placeholder="Where are you based?"
+             placeholder={$_('home.locationPlaceholder')}
              class="mt-2 w-full rounded-lg border border-slate-600 bg-slate-700 p-4 focus:border-transparent focus:ring-2 focus:ring-blue-500"
              required
            />
          </label>
          
          <label class="block text-sm font-medium">
-           Age group <span class="text-red-400">*</span>
+          {$_('home.ageGroup')}<span class="text-red-400">*</span>
            <select
              bind:value={userAgeGroup}
              class="mt-2 w-full rounded-lg border border-slate-600 bg-slate-700 p-4 focus:border-transparent focus:ring-2 focus:ring-blue-500"
              required
            >
-             <option value="" disabled selected>Select your age group</option>
+             <option value="" disabled selected>{$_('home.selectAgeGroup')}</option>
              {#each ageGroups as ageGroup}
                <option value={ageGroup}>{ageGroup}</option>
              {/each}
@@ -99,7 +111,7 @@
          class="w-full rounded-lg bg-blue-600 px-6 py-3 font-medium transition-colors duration-200 hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-800 focus:outline-none {isLoading ? 'opacity-75' : ''}"
          disabled={isLoading}
        >
-         {isLoading ? "Loading..." : "Continue to Chat"}
+         {isLoading ? $_('loading'): $_('home.continueToChat')}
        </button>
      </form>
    </div>

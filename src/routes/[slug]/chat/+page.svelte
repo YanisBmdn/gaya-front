@@ -5,6 +5,8 @@
 	import { page } from '$app/state';
 	import { marked } from 'marked';
 	import { goto } from '$app/navigation';
+	import { _ } from 'svelte-i18n';
+	import { locale } from 'svelte-i18n';
 	
 	let messages: Array<{ type: 'user' | 'botMessage' | 'botImage'; message: string }> = $state([]);
 	let inputValue: string = $state('');
@@ -28,7 +30,16 @@
 		chatDiv.scrollTop = chatDiv.scrollHeight;
 		
 		// Get visualization
-		const response = await fetch(`${BACKEND_URL}/test`);
+		const response = await fetch(`api/visualization`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+			'Accept-Language': $locale || 'en'
+		},
+		body: JSON.stringify({
+			chat_id: page.params.slug,
+		})
+		});
 		const json = await response.json();
 		
 		// Add visualization message
@@ -46,7 +57,7 @@
 		  console.error('Plot div not found');
 		  messages = [...messages, { 
 			type: 'botMessage', 
-			message: 'Sorry, there was an error generating the visualization.' 
+			message: '' 
 		  }];
 		  return;
 		}
@@ -54,10 +65,11 @@
 		const base64 = await plotToBase64(lastPlotDiv);
 
 
-		const response2 = await fetch(`${BACKEND_URL}/chat/description`, {
+		const response2 = await fetch(`api/description`, {
 		method: 'POST',
 		headers: {
-			'Content-Type': 'application/json'
+			'Content-Type': 'application/json',
+			'Accept-Language': $locale || 'en'
 		},
 		body: JSON.stringify({
 			chat_id: page.params.slug,
@@ -97,7 +109,7 @@
   </script>
   
   <div class="flex h-screen flex-col items-center justify-end gap-8 bg-slate-900 p-4 text-white">
-	<h1 class="text-2xl font-bold">Climate Science Mentor</h1>
+	<h1 class="text-2xl font-bold">{$_("chat.title")}</h1>
 	
 	<div bind:this={chatDiv} class="container h-full w-1/2 overflow-auto rounded-lg p-4">
 	  {#each messages as { type, message }}
@@ -109,7 +121,7 @@
 	  <input
 		bind:value={inputValue}
 		type="text"
-		placeholder="Ask any question you want"
+		placeholder={$_("chat.chatPlaceholder")}
 		class="rounded-l-lg border border-slate-400 border-r-0 p-2 flex-1"
 		disabled={isProcessing}
 	  />
@@ -122,7 +134,7 @@
 	  </button>
 
 		<button onclick={() => goto(`/${page.params.slug}/survey?step=post`)} class="rounded-lg bg-blue-500 text-white p-2 cursor-pointer">
-			To survey
+			{$_("chat.toSurvey")}
 		</button>
 	</form>
   </div>

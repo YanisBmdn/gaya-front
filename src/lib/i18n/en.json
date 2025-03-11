@@ -1,0 +1,37 @@
+{
+    "footer": "All information provided on this site is intended for research purposes only. Any data stored is used solely for statistical analysis and will not be shared with or disclosed to third parties.",
+    "loading": "Loading...",
+    "currency": "$",
+    "chat": {
+        "title": "Climate science mentor",
+        "vizError": "Sorry, there was an error generating the visualization.",
+        "chatPlaceholder": "Ask any question you want",
+        "toSurvey": "End chat and take final survey"
+    },
+    "home": {
+        "userInfo": "Tell Us About Yourself",
+        "userInfoPlaceholder": "Share your background, skills, and interests...",
+        "aboutYou": "About You",
+        "location": "Your location of interest",
+        "locationPlaceholder": "Where do you live",
+        "selectAgeGroup": "Select your age group",
+        "ageGroup": "Your age group",
+        "continueToChat": "Continue to scenario"
+    },
+    "survey": {
+        "confidenceTitle": "How confident are you in your choices",
+        "confidenceLabels": {
+            "1": "Not at all confident",
+            "2": "Slightly confident",
+            "3": "Moderately confident",
+            "4": "Very confident",
+            "5": "Extremely confident"
+        },
+        "totalBudget": "Total budget",
+        "totalBudgetAllocated": "Total budget allocated",
+        "allocationTitle": "Based on the information you were given, how would you allocate the budget?",
+        "allocationExplanation": "Explanation of Allocation",
+        "allocationExplanationPlaceholder": "Explain the reasoning behind your budget allocation...",
+        "submitSurvey": "Submit budget allocation"
+    }
+}

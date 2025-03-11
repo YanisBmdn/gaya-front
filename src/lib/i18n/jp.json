@@ -1,0 +1,37 @@
+{
+    "footer": "本サイトで提供されるすべての情報は、研究目的のみを目的としています。保存されたデータは統計分析のためにのみ使用され、第三者に開示または共有されることはありません。",
+    "loading": "読み込み中...",
+    "currency": "¥",
+    "chat": {
+        "title": "気候科学メンター",
+        "vizError": "申し訳ありませんが、ビジュアライゼーションの生成中にエラーが発生しました。",
+        "chatPlaceholder": "自由に質問してください",
+        "toSurvey": "チャットを終了して最終アンケートに進む"
+    },
+    "home": {
+        "userInfo": "あなたについて教えてください",
+        "userInfoPlaceholder": "あなたの経歴、スキル、興味を共有してください...",
+        "aboutYou": "あなたについて",
+        "location": "関心のある場所",
+        "locationPlaceholder": "どこに住んでいますか",
+        "selectAgeGroup": "年齢層を選択してください",
+        "ageGroup": "あなたの年齢層",
+        "continueToChat": "シナリオを続ける"
+    },
+    "survey": {
+        "confidenceTitle": "あなたの選択にどの程度自信がありますか",
+        "confidenceLabels": {
+            "1": "まったく自信がない",
+            "2": "少し自信がある",
+            "3": "ある程度自信がある",
+            "4": "とても自信がある",
+            "5": "非常に自信がある"
+        },
+        "totalBudget": "総予算",
+        "totalBudgetAllocated": "割り当てられた総予算",
+        "allocationTitle": "与えられた情報に基づいて、どのように予算を配分しますか？",
+        "allocationExplanation": "予算配分の説明",
+        "allocationExplanationPlaceholder": "予算配分の理由を説明してください...",
+        "submitSurvey": "予算配分を提出する"
+    }
+}

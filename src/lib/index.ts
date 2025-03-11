@@ -1,6 +1,6 @@
 import { BACKEND_URL } from "$env/static/private";
 
-const getImageDescription = async (image: Base64URLString): Promise<string> => {
+export const getImageDescription = async (image: Base64URLString): Promise<string> => {
     const response = await fetch(`${BACKEND_URL}/chat/description`, {
         method: 'POST',
         headers: {

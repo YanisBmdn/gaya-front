@@ -3,6 +3,8 @@
     import { page } from '$app/state'; // Changed from '$app/state' to '$app/stores'
     import { userDescriptionStore } from '$lib/stores';
 	import { goto } from '$app/navigation';
+    import { _ } from 'svelte-i18n';
+    import { locale } from 'svelte-i18n';
 
     // Create a store for allocations with proper initialization
     const allocations = writable([]);
@@ -37,7 +39,7 @@
     );
 
     // Function to update allocation when percentage changes
-    function updateAllocationByPercentage(index: number, percentage: number) {
+    function updateAllocationByPercentage(index: number, percentage: number): number {
         if (!$userDescriptionStore.budget) return;
         
         const amount = Math.round($userDescriptionStore.budget * (percentage / 100));
@@ -79,45 +81,43 @@
         const response = await fetch('/api/', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Accept-Language': $locale || 'en'
             },
             body: JSON.stringify({submissionData, step: surveyStep})
         });
 
-        // Handle response (add success/error handling)
         if (response.ok) {
-            // Show success message or redirect
             surveyStep === "pre" ? goto(`/${page.params.slug}/chat`) : goto('/end')
         } else {
-            // Show error message
             console.error('Failed to submit budget allocation');
         }
     }
 
     const confidenceLevels = [
-        { value: 1, label: 'Very Low' },
-        { value: 2, label: 'Low' },
-        { value: 3, label: 'Moderate' },
-        { value: 4, label: 'High' },
-        { value: 5, label: 'Very High' }
+        { value: 1, label:  $_('survey.confidenceLabels.1') },
+        { value: 2, label:  $_('survey.confidenceLabels.2') },
+        { value: 3, label:  $_('survey.confidenceLabels.3') },
+        { value: 4, label:  $_('survey.confidenceLabels.4') },
+        { value: 5, label:  $_('survey.confidenceLabels.5') }
     ];
 </script>
 
 <div class="flex flex-col items-center justify-center gap-8 p-4 bg-slate-900">
     <p class="w-1/2">{$userDescriptionStore.scenario || 'Loading scenario...'}</p>
-    <h2 class="text-2xl font-bold mb-6">{surveyStep === "pre" ? "Based on the scenario, how would you allocate the budget?" : "Based on the scenario and the chat you had with the agent. How would you allocate the budget?"}</h2>
+    <h2 class="text-2xl font-bold mb-6">{$_("survey.allocationTitle")}</h2>
     
     <div class="mb-6">
         <div class="flex justify-between mb-2">
-            <span>Total Budget:</span>
-            <span>${($userDescriptionStore.budget || 0).toLocaleString()}</span>
+            <span>{$_("survey.totalBudget")}</span>
+            <span>{$_('currency')}{($userDescriptionStore.budget || 0).toLocaleString()}</span>
         </div>
         <div class="flex justify-between">
-            <span>Total Allocated:</span>
+            <span>{$_("survey.totalBudgetAllocated")}</span>
             <span 
                 class={$totalAllocated > ($userDescriptionStore.budget || 0) ? 'text-red-500' : 'text-green-500'}
             >
-                ${$totalAllocated.toLocaleString()} 
+            {$_('currency')}{$totalAllocated.toLocaleString()} 
                 ({$userDescriptionStore.budget ? Math.round(($totalAllocated / $userDescriptionStore.budget) * 100) : 0}%)
             </span>
         </div>
@@ -136,8 +136,8 @@
                         min="0" 
                         max="100"
                         step="2"
-                        value={percentages[index]}
-                        on:input={(e) => updateAllocationByPercentage(index, parseInt(e.target.value))}
+                        bind:value={percentages[index]}
+                        on:input={(e) => percentages[index] = updateAllocationByPercentage(index, parseInt(e.target.value))}
                         class="flex-grow"
                         disabled={$totalAllocated >= ($userDescriptionStore.budget || 0) && $allocations[index] === 0}
                     />
@@ -148,13 +148,13 @@
                 </div>
             {/each}
         {:else}
-            <p>Loading options...</p>
+            <p>{$_('loading')}</p>
         {/if}
     </div>
 
     <div class="mb-6 w-full md:w-1/2 lg:w-1/4">
         <label class="block mb-2">
-            Confidence Level
+            {$_('survey.confidenceTitle')}
         </label>
         <div class="flex justify-between flex-wrap">
             {#each confidenceLevels as level}
@@ -174,14 +174,14 @@
 
     <div class="mb-6 w-full md:w-1/2 lg:w-1/3">
         <label class="block mb-2" for="explanation">
-            Explanation of Allocation
+            {$_('survey.allocationExplanation')}
         </label>
         <textarea 
             id="explanation"
             bind:value={$explanation}
             rows="4"
             class="w-full border rounded p-2"
-            placeholder="Explain the reasoning behind your budget allocation..."
+            placeholder={$_('survey.allocationExplanationPlaceholder')}
         ></textarea>
     </div>
 
@@ -190,6 +190,6 @@
         class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
         disabled={$totalAllocated > ($userDescriptionStore.budget || 0)}
     >
-        Submit Budget Allocation
+        {$_('survey.submitSurvey')}
     </button>
 </div>
