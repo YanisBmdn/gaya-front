@@ -23,5 +23,15 @@ const createPersistentStore = (key: string, initialValue: any) => {
     return store;
   }
 
-export const userDescriptionStore: Writable<ScenarioResponse> = createPersistentStore('userDescription', {})
+export const scenarioInformationStore: Writable<ScenarioResponse> = createPersistentStore('userDescription', {})
 
+interface ChatInformation {
+    chatId: string;
+    userDescription: string;
+    location: string;
+    topicOfInterest: string;
+    complexityLevel: number;
+    group: 'control' | 'proposedMethod';
+}
+
+export const chatInformationStore: Writable<ChatInformation> = createPersistentStore('chatInformation', {})

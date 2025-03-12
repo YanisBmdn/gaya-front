@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { tick } from 'svelte';
+	import { onMount, tick } from 'svelte';
 	import Message from '$lib/components/Message.svelte';
 	import { plotToBase64 } from '$lib/plotly-helper';
 	import { page } from '$app/state';
@@ -7,41 +7,38 @@
 	import { goto } from '$app/navigation';
 	import { _ } from 'svelte-i18n';
 	import { locale } from 'svelte-i18n';
+	import { chatInformationStore, scenarioInformationStore } from '$lib/stores';
 	
 	let messages: Array<{ type: 'user' | 'botMessage' | 'botImage'; message: string }> = $state([]);
 	let inputValue: string = $state('');
 	let chatDiv: HTMLDivElement;
 	let isProcessing = $state(false);
-	
-	const submit = async (e: Event) => {
-	  e.preventDefault();
-	  if (inputValue.trim() === '') return;
-	  if (isProcessing) return;
-	  
-	  isProcessing = true;
-	  
-	  try {
-		// Add user message
-		messages = [...messages, { type: 'user', message: inputValue.trim() }];
-		inputValue = '';
-		
-		// Wait for DOM to update after adding message
-		await tick();
-		chatDiv.scrollTop = chatDiv.scrollHeight;
-		
-		// Get visualization
-		const response = await fetch(`api/visualization`, {
+
+	onMount(async () => {
+		console.log($chatInformationStore.complexityLevel);
+		console.log($chatInformationStore.userDescription);
+		/*
+	  const response = await fetch(`/api/visualization`, {
 		method: 'POST',
 		headers: {
-			'Content-Type': 'application/json',
-			'Accept-Language': $locale || 'en'
+		  'Content-Type': 'application/json',
+		  'Accept-Language': $locale || 'en'
 		},
 		body: JSON.stringify({
-			chat_id: page.params.slug,
+		  chat_id: page.params.slug,
+		  complexity_level: $chatInformationStore.complexityLevel,
+		  user_description: $chatInformationStore.userDescription,
+		  location: $chatInformationStore.location,
+		  message: "Provide a meaningful visualization for the given scenario and the topic of interest",
+		  scenario: $scenarioInformationStore.scenario,
+		  topic: $chatInformationStore.topicOfInterest,
+		  options: $scenarioInformationStore.options
 		})
-		});
-		const json = await response.json();
-		
+	})
+	  await tick();
+	  chatDiv.scrollTop = chatDiv.scrollHeight;
+
+	  const json = await response.json();
 		// Add visualization message
 		messages = [...messages, { type: 'botImage', message: json.visualization }];
 		
@@ -61,10 +58,55 @@
 		  }];
 		  return;
 		}
+		  */
+	});
+
+	const submit = async (e: Event) => {
+	  e.preventDefault();
+	  if (inputValue.trim() === '') return;
+	  if (isProcessing) return;
+	  
+	  isProcessing = true;
+	  
+	  try {
+		const userMessage = inputValue.trim();
+		inputValue = '';
+		messages = [...messages, { type: 'user', message: userMessage }];
 		
-		const base64 = await plotToBase64(lastPlotDiv);
+		await tick();
+		chatDiv.scrollTop = chatDiv.scrollHeight;
 
+		const response = await fetch(`/api/chat`, {
+		  method: 'POST',
+		  headers: {
+			'Content-Type': 'application/json',
+			'Accept-Language': $locale || 'en'
+		  },
+		  body: JSON.stringify({
+			message: userMessage,
+		  })
+		});
 
+		const reader = response.body?.getReader();
+		const decoder = new TextDecoder();
+		let botResponse = '';
+		messages = [...messages, { type: 'botMessage', message: '' }];
+
+		try {
+		  while (true) {
+			const { done, value } = await reader.read();
+			if (done) break;
+			
+			const chunk = decoder.decode(value, { stream: true });
+			botResponse += chunk;
+			
+			messages[messages.length - 1].message = await marked.parse(botResponse);
+		  }
+		} catch (error) {
+		  console.error('Error reading stream:', error);
+		}
+
+		/*
 		const response2 = await fetch(`api/description`, {
 		method: 'POST',
 		headers: {
@@ -97,14 +139,16 @@
 			// Update the message in real-time
 			messages[messages.length - 1].message = await marked.parse(description);
 		}
+			
 		} catch (error) {
 		console.error('Error reading stream:', error);
-		}
+		}*/
 	  } finally {
 		isProcessing = false;
 		await tick();
 		chatDiv.scrollTop = chatDiv.scrollHeight;
 	  }
+		
 	};
   </script>
   

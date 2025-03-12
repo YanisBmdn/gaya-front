@@ -1,7 +1,7 @@
 <script lang="ts">
     import { writable, derived } from 'svelte/store';
     import { page } from '$app/state'; // Changed from '$app/state' to '$app/stores'
-    import { userDescriptionStore } from '$lib/stores';
+    import { scenarioInformationStore } from '$lib/stores';
 	import { goto } from '$app/navigation';
     import { _ } from 'svelte-i18n';
     import { locale } from 'svelte-i18n';
@@ -11,12 +11,12 @@
 
     const surveyStep = page.url.searchParams.get('step');
     
-    // Initialize the allocations when userDescriptionStore is loaded
-    $: if ($userDescriptionStore.options && $userDescriptionStore.options.length > 0) {
+    // Initialize the allocations when scenarioInformationStore is loaded
+    $: if ($scenarioInformationStore.options && $scenarioInformationStore.options.length > 0) {
         // Only initialize if not already set
         allocations.update(current => {
             if (current.length === 0) {
-                return $userDescriptionStore.options.map(() => 0);
+                return $scenarioInformationStore.options.map(() => 0);
             }
             return current;
         });
@@ -35,14 +35,14 @@
 
     // Calculate percentages from allocations
     $: percentages = $allocations.map(amount => 
-        $userDescriptionStore.budget ? Math.round((amount / $userDescriptionStore.budget) * 100) : 0
+        $scenarioInformationStore.budget ? Math.round((amount / $scenarioInformationStore.budget) * 100) : 0
     );
 
     // Function to update allocation when percentage changes
     function updateAllocationByPercentage(index: number, percentage: number): number {
-        if (!$userDescriptionStore.budget) return;
+        if (!$scenarioInformationStore.budget) return;
         
-        const amount = Math.round($userDescriptionStore.budget * (percentage / 100));
+        const amount = Math.round($scenarioInformationStore.budget * (percentage / 100));
         
         allocations.update(currentAllocations => {
             const newAllocations = [...currentAllocations];
@@ -52,11 +52,11 @@
                 i === index ? sum : sum + val, 0);
             
             // Ensure total doesn't exceed budget
-            if (otherTotal + amount <= $userDescriptionStore.budget) {
+            if (otherTotal + amount <= $scenarioInformationStore.budget) {
                 newAllocations[index] = amount;
             } else {
                 // If it would exceed, set to maximum possible
-                newAllocations[index] = $userDescriptionStore.budget - otherTotal;
+                newAllocations[index] = $scenarioInformationStore.budget - otherTotal;
             }
             
             return newAllocations;
@@ -67,9 +67,9 @@
     async function handleSubmit() {
         const submissionData = {
             id: page.params.slug, // Fixed from page.params to $page.params
-            budget: $userDescriptionStore.budget,
+            budget: $scenarioInformationStore.budget,
             budgetDistribution: $allocations.map((amount, index) => ({
-                category: $userDescriptionStore.options[index],
+                category: $scenarioInformationStore.options[index],
                 amount,
                 percentage: percentages[index]
             })),
@@ -78,13 +78,13 @@
             explanation: $explanation
         };
         
-        const response = await fetch('/api/', {
+        const response = await fetch(`/api?step=${surveyStep}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Accept-Language': $locale || 'en'
             },
-            body: JSON.stringify({submissionData, step: surveyStep})
+            body: JSON.stringify({...submissionData})
         });
 
         if (response.ok) {
@@ -104,28 +104,28 @@
 </script>
 
 <div class="flex flex-col items-center justify-center gap-8 p-4 bg-slate-900">
-    <p class="w-1/2">{$userDescriptionStore.scenario || 'Loading scenario...'}</p>
+    <p class="w-1/2">{$scenarioInformationStore.scenario || 'Loading scenario...'}</p>
     <h2 class="text-2xl font-bold mb-6">{$_("survey.allocationTitle")}</h2>
     
     <div class="mb-6">
         <div class="flex justify-between mb-2">
             <span>{$_("survey.totalBudget")}</span>
-            <span>{$_('currency')}{($userDescriptionStore.budget || 0).toLocaleString()}</span>
+            <span>{$_('currency')}{($scenarioInformationStore.budget || 0).toLocaleString()}</span>
         </div>
         <div class="flex justify-between">
             <span>{$_("survey.totalBudgetAllocated")}</span>
             <span 
-                class={$totalAllocated > ($userDescriptionStore.budget || 0) ? 'text-red-500' : 'text-green-500'}
+                class={$totalAllocated > ($scenarioInformationStore.budget || 0) ? 'text-red-500' : 'text-green-500'}
             >
             {$_('currency')}{$totalAllocated.toLocaleString()} 
-                ({$userDescriptionStore.budget ? Math.round(($totalAllocated / $userDescriptionStore.budget) * 100) : 0}%)
+                ({$scenarioInformationStore.budget ? Math.round(($totalAllocated / $scenarioInformationStore.budget) * 100) : 0}%)
             </span>
         </div>
     </div>
 
     <div class="space-y-4 mb-6">
-        {#if $userDescriptionStore.options && $userDescriptionStore.options.length > 0}
-            {#each $userDescriptionStore.options as category, index}
+        {#if $scenarioInformationStore.options && $scenarioInformationStore.options.length > 0}
+            {#each $scenarioInformationStore.options as category, index}
                 <div class="flex items-center space-x-4">
                     <label class="w-1/3" for={`slider-${index}`}>
                         {category}
@@ -139,7 +139,7 @@
                         bind:value={percentages[index]}
                         on:input={(e) => percentages[index] = updateAllocationByPercentage(index, parseInt(e.target.value))}
                         class="flex-grow"
-                        disabled={$totalAllocated >= ($userDescriptionStore.budget || 0) && $allocations[index] === 0}
+                        disabled={$totalAllocated >= ($scenarioInformationStore.budget || 0) && $allocations[index] === 0}
                     />
                     <span class="w-42 text-right">
                         ${($allocations[index] || 0).toLocaleString()} 
@@ -188,7 +188,7 @@
     <button 
         on:click={handleSubmit}
         class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
-        disabled={$totalAllocated > ($userDescriptionStore.budget || 0)}
+        disabled={$totalAllocated > ($scenarioInformationStore.budget || 0)}
     >
         {$_('survey.submitSurvey')}
     </button>

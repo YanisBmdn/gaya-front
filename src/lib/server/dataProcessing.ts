@@ -1,6 +1,24 @@
 import path from 'path';
 import fs from 'fs/promises';
 
+const topicOfInterest = ['Temperatures', 'Air Pollution']
+const userGroup = ['Control','Proposed Method']
+
+let topicIndex = 0;
+let groupIndex = 0;
+
+export const getTopicOfInterest = () => {
+    const topic = topicOfInterest[topicIndex];
+    topicIndex = (topicIndex + 1) % topicOfInterest.length;
+    return topic;
+}
+
+export const getUserGroup = () => {
+    const group = userGroup[groupIndex];
+    groupIndex = (groupIndex + 1) % userGroup.length;
+    return group;
+}
+
 export interface SurveyData {
     id: string;
     budget: number;
@@ -21,7 +39,7 @@ const POST_SURVEY_PATH = path.resolve('src/lib/server/postsurvey.jsonl');
 
 export async function appendToJSONL(data: SurveyData, step: "pre" | "post"): Promise<void> {
     try{
-
+        const JSONL_PATH = step === 'pre' ? PRE_SURVEY_FILE : POST_SURVEY_PATH;
         // Read the file if it exists
         let existingData: string[] = [];
         try {
