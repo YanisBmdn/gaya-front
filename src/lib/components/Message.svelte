@@ -14,6 +14,7 @@
 	}
 
 	onMount(() => {
+		console.log("is mounted");
 		if(type === 'botImage' && message) {
 			loadPlot();
 		}
@@ -44,7 +45,7 @@
 	<div
 		class="max-w-[100%] rounded-lg p-2 shadow-sm"
 	>
-		<div bind:this={plotDiv} class="plotDiv w-md h-100 rounded-lg bg-transparent" transition:fade={{duration: 1000}}></div>
+		<div bind:this={plotDiv} class="plotDiv w-1/8 h-100 rounded-lg bg-transparent" transition:fade={{duration: 1000}}></div>
 	</div>
 </div>
 {/if}

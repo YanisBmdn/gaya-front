@@ -1,7 +1,7 @@
 <script lang="ts">
     import { writable, derived } from 'svelte/store';
     import { page } from '$app/state'; // Changed from '$app/state' to '$app/stores'
-    import { scenarioInformationStore } from '$lib/stores';
+    import { scenarioInformationStore, chatInformationStore } from '$lib/stores';
 	import { goto } from '$app/navigation';
     import { _ } from 'svelte-i18n';
     import { locale } from 'svelte-i18n';
@@ -75,7 +75,10 @@
             })),
             totalAllocated: $totalAllocated,
             confidence: $confidence,
-            explanation: $explanation
+            explanation: $explanation,
+            group: $chatInformationStore.group,
+            topic: $chatInformationStore.topicOfInterest,
+            ageGroup: $chatInformationStore.ageGroup,
         };
         
         const response = await fetch(`/api?step=${surveyStep}`, {

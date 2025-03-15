@@ -1,4 +1,4 @@
-import type { ScenarioResponse } from '$lib'
+import type { ScenarioResponse } from '$lib/server'
 import { writable, type Writable } from 'svelte/store'
 import { browser } from '$app/environment';
 
@@ -28,6 +28,7 @@ export const scenarioInformationStore: Writable<ScenarioResponse> = createPersis
 interface ChatInformation {
     chatId: string;
     userDescription: string;
+    ageGroup: string;
     location: string;
     topicOfInterest: string;
     complexityLevel: number;

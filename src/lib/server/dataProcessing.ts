@@ -26,6 +26,7 @@ export interface SurveyData {
     budgetDistribution: BudgetDistributionData[];
     confidence: number;
     explanation: string;
+    group: string;
 }
 
 export interface BudgetDistributionData {
@@ -46,7 +47,7 @@ export async function appendToJSONL(data: SurveyData, step: "pre" | "post"): Pro
             const file = step === 'pre' ? PRE_SURVEY_FILE : POST_SURVEY_PATH;
             const fileContent = await fs.readFile(file, 'utf-8');
             existingData = fileContent.trim().split('\n');
-        } catch (err) {
+        } catch (err : any) {
             if (err.code !== 'ENOENT') throw err; // Ignore "file not found" error
         }
 

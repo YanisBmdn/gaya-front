@@ -59,7 +59,8 @@
                   chat_id: chatId,
                   user_description: userDescription,
                   age_group: userAgeGroup,
-                  location: userLocation
+                  location: userLocation,
+                  topic: topicData.topic,
               })
           });
           
@@ -68,10 +69,11 @@
           chatInformationStore.set({
               chatId,
               userDescription,
+              ageGroup: userAgeGroup,
               location: userLocation,
               topicOfInterest: topicData.topic,
               group: topicData.group,
-              complexityLevel: complexityLevel
+              complexityLevel: complexityLevel,
           });
           
           // Navigate to survey page

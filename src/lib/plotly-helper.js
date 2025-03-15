@@ -1,12 +1,15 @@
-export async function createPlot(element, plotData) {
-    try {
-      const Plotly = await import('plotly.js-dist');
-      await Plotly.newPlot(element, plotData.data, plotData.layout);
-    } catch (error) {
-      console.error('Error creating plot:', error);
-      throw error;
-    }
+export async function createPlot(element, plotData, width = 600, height = 400) {
+  try {
+    const Plotly = await import('plotly.js-dist');
+    plotData.layout = plotData.layout || {};
+    plotData.layout.width = width;
+    plotData.layout.height = height;
+    await Plotly.newPlot(element, plotData.data, plotData.layout);
+  } catch (error) {
+    console.error('Error creating plot:', error);
+    throw error;
   }
+}
 
 export async function plotToBase64(element){
   try {

@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import { getComplexityLevel } from '$lib/index';
+import { getComplexityLevel } from '$lib/server/index';
 
 export async function POST({ request }) {
     const data = await request.json();
