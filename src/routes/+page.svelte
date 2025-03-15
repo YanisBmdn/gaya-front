@@ -3,6 +3,22 @@
   import { v4 as uuidv4 } from 'uuid';
   import { scenarioInformationStore, chatInformationStore } from '$lib/stores';
   import { _, locale, locales} from 'svelte-i18n';
+  import Modal from '$lib/components/Modal.svelte';
+	import { onMount } from 'svelte';
+
+  let showModal = $state(false);
+  
+  onMount(() => {
+    openModal();
+  });
+
+  function openModal() {
+    showModal = true;
+  }
+  
+  function closeModal() {
+    showModal = false;
+  }
   
   let userDescription = $state('');
   let userLocation = $state('');
@@ -63,7 +79,8 @@
                   topic: topicData.topic,
               })
           });
-          
+
+          console.log(topicData.group);
           // Update stores with fetched data
           scenarioInformationStore.set(await scenarioResponse.json());
           chatInformationStore.set({
@@ -93,6 +110,22 @@
   {/each}
 </select>
 </div>
+
+<Modal 
+isOpen={showModal} 
+title={$_('home.modalTitle')} 
+onClose={closeModal}
+>
+<p class="text-gray-700 dark:text-gray-300">
+  {$_('home.modalText')}
+</p>
+
+<!-- You can add any other content here -->
+<div class="mt-4">
+  <p class="italic text-gray-500">{$_('home.modalInformation')}</p>
+</div>
+</Modal>
+
 
 <div class="flex h-full flex-col items-center justify-center space-y-8">
 <h1 class="text-center text-4xl font-bold">{$_('home.userInfo')}</h1>

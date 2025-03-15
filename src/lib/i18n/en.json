@@ -5,8 +5,11 @@
     "chat": {
         "title": "Climate science mentor",
         "vizError": "Sorry, there was an error generating the visualization.",
-        "chatPlaceholder": "Ask any question you want",
-        "toSurvey": "End chat and take final survey"
+        "chatPlaceholder": "Ask any questions about the visualization or the scenario !",
+        "toSurvey": "End chat and take final survey",
+        "modalTitle": "Leaving Session",
+        "modalText": "Once you leave, you'll be redirected to the last survey. Are you sure you want to exit?",
+        "modalInformation": "Your chat data will be permanently deleted upon exiting this session."
     },
     "home": {
         "userInfo": "Tell Us About Yourself",
@@ -16,7 +19,10 @@
         "locationPlaceholder": "Where do you live",
         "selectAgeGroup": "Select your age group",
         "ageGroup": "Your age group",
-        "continueToChat": "Continue to scenario"
+        "continueToChat": "Continue to scenario",
+        "modalTitle": "Climate Decision-Making Study",
+        "modalText": "Welcome! This study explores how climate data affects civic decision-making.\nYou'll be presented with a local climate issue requiring resource allocation. After sharing your initial thoughts, you'll view climate visualizations for your area and chat briefly with our AI assistant. Finally, you'll make a decision and explain your reasoning.\n The process takes about 15 minutes. Your anonymized responses will help advance climate communication research.\nClick \n \"Begin\" when ready.",
+        "modalInformation": "All responses are anonymized and for research purpose. Chat data will be permanently deleted upon exiting this session."
     },
     "survey": {
         "confidenceTitle": "How confident are you in your choices",

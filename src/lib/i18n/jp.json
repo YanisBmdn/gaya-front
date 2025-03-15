@@ -6,7 +6,10 @@
         "title": "気候科学メンター",
         "vizError": "申し訳ありませんが、ビジュアライゼーションの生成中にエラーが発生しました。",
         "chatPlaceholder": "自由に質問してください",
-        "toSurvey": "チャットを終了して最終アンケートに進む"
+        "toSurvey": "チャットを終了して最終アンケートに進む",
+        "modalTitle": "Leaving Session",
+        "modalText": "Once you leave, you'll be redirected to the last survey. Are you sure you want to exit?",
+        "modalInformation": "Your chat data will be permanently deleted upon exiting this session."
     },
     "home": {
         "userInfo": "あなたについて教えてください",
@@ -16,7 +19,10 @@
         "locationPlaceholder": "どこに住んでいますか",
         "selectAgeGroup": "年齢層を選択してください",
         "ageGroup": "あなたの年齢層",
-        "continueToChat": "シナリオを続ける"
+        "continueToChat": "シナリオを続ける",
+        "modalTitle": "Climate Decision-Making Study",
+        "modalText": "Welcome! This study explores how climate data affects civic decision-making.\nYou'll be presented with a local climate issue requiring resource allocation. After sharing your initial thoughts, you'll view climate visualizations for your area and chat briefly with our AI assistant. Finally, you'll make a decision and explain your reasoning.\n The process takes about 15 minutes. Your anonymized responses will help advance climate communication research.\nClick "Begin" when ready.",
+        "modalInformation": "All responses are anonymized. Chat data will be permanently deleted when you exit this session. Your privacy is our priority."
     },
     "survey": {
         "confidenceTitle": "あなたの選択にどの程度自信がありますか",
