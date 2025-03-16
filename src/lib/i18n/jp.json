@@ -2,6 +2,7 @@
     "footer": "本サイトで提供されるすべての情報は、研究目的のみを目的としています。保存されたデータは統計分析のためにのみ使用され、第三者に開示または共有されることはありません。",
     "loading": "読み込み中...",
     "currency": "¥",
+    "end": "Thank you very much for contribution to our study.\u000A Your responses will help us understand how to better communicate climate data to the public !",
     "chat": {
         "title": "気候科学メンター",
         "vizError": "申し訳ありませんが、ビジュアライゼーションの生成中にエラーが発生しました。",

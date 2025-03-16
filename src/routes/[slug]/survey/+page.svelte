@@ -155,8 +155,8 @@
         {/if}
     </div>
 
-    <div class="mb-6 w-full md:w-1/2 lg:w-1/4">
-        <label class="block mb-2">
+    <div class="mb-6 w-full md:w-1/2 lg:w-1/2">
+        <label class="block mb-2" for="confidence">
             {$_('survey.confidenceTitle')}
         </label>
         <div class="flex justify-between flex-wrap">

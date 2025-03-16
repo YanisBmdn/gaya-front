@@ -2,7 +2,7 @@ import path from 'path';
 import fs from 'fs/promises';
 
 const topicOfInterest = ['Temperatures', 'Air Pollution']
-const userGroup = ['Control','proposedMethod']
+const userGroup = ['control','proposedMethod']
 
 let topicIndex = 0;
 let groupIndex = 0;

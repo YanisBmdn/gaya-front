@@ -121,9 +121,18 @@ onClose={closeModal}
 </p>
 
 <!-- You can add any other content here -->
-<div class="mt-4">
+<div class="my-4">
   <p class="italic text-gray-500">{$_('home.modalInformation')}</p>
 </div>
+<div class="flex justify-end border-t p-2 dark:border-gray-700">
+  <button
+    type="button"
+    class="rounded bg-blue-500 px-4 py-2 font-medium text-white hover:bg-blue-600 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+    onclick={closeModal}
+  >
+    Begin
+  </button>
+<div>
 </Modal>
 
 

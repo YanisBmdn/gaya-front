@@ -23,13 +23,13 @@
 	function openModal() {
 		showModal = true;
 	}
-	
+
 	function closeModal() {
 		showModal = false;
 	}
-  
 
 	const visualizationProcess = async () => {
+		isProcessing = true;
 		if (chatStep === 1) {
 			await getNewVisualization(
 				'Provide a followup visualization for the given scenario and the topic of interest'
@@ -52,7 +52,7 @@
 				...messages,
 				{
 					type: 'botMessage',
-					message: ''
+					message: 'There was an error getting the visualization.'
 				}
 			];
 			return;
@@ -60,6 +60,7 @@
 
 		await getVisualizationDescription(page.params.slug, base64);
 		await tick();
+		isProcessing = false;
 	};
 
 	const getSimpleChat = async (userMessage: string) => {
@@ -107,6 +108,9 @@
 	};
 
 	const getVisualizationDescription = async (chat_id: string, image: string) => {
+		messages = [...messages, { type: 'botMessage', message: 'Generating description...' }];
+		await tick();
+
 		const response = await fetch(`/api/description`, {
 			method: 'POST',
 			headers: {
@@ -127,7 +131,6 @@
 		}
 
 		// Add new message to display the incoming stream
-		messages = [...messages, { type: 'botMessage', message: '' }];
 
 		// Get reader from the response body stream
 		const reader = response.body.getReader();
@@ -146,7 +149,7 @@
 				accumulatedText += text;
 
 				// Update the message with current text
-				messages[messages.length - 1].message = accumulatedText;
+				messages[messages.length - 1].message = await marked.parse(accumulatedText);
 			}
 		} catch (error) {
 			console.error('Error reading stream:', error);
@@ -157,6 +160,7 @@
 		message: string = 'Provide a meaningful visualization for the given scenario and the topic of interest'
 	) => {
 		messages = [...messages, { type: 'botMessage', message: 'Generating new visualization...' }];
+		/*
 		const response = await fetch(`/api/visualization`, {
 			method: 'POST',
 			headers: {
@@ -165,7 +169,7 @@
 			},
 			body: JSON.stringify({
 				chat_id: page.params.slug,
-				complexity_level: 0,
+				complexity_level: chatStep,
 				user_description: $chatInformationStore.userDescription,
 				location: $chatInformationStore.location,
 				messages: messagesToLLMFormat([...messages, { type: 'botMessage', message: message }]),
@@ -174,21 +178,27 @@
 				options: $scenarioInformationStore.options
 			})
 		});
+		*/
+
+		const response = await fetch ('http://127.0.0.1:8000/test')
+		const temp = await response.json();
 
 		chatDiv.scrollTop = chatDiv.scrollHeight;
-		const json = await response.json();
+		//const json = await response.json();
 		messages.pop();
 		await tick();
 
-		messages.push({ type: 'botImage', message: json });
+		messages.push({ type: 'botImage', message: temp.visualization });
 		await tick();
 	};
 
 	onMount(async () => {
 		if ($chatInformationStore.group === 'control') {
-			// await visualizationProcess();
+			console.log('Control');
+			await visualizationProcess();
 		} else if ($chatInformationStore.group === 'proposedMethod') {
-			// await visualizationProcess();
+			console.log('Proposed Method');
+			await visualizationProcess();
 		}
 	});
 
@@ -202,47 +212,39 @@
 		const userMessage = inputValue.trim();
 		getSimpleChat(userMessage);
 	};
-
-	const getFollowupVisualization = async () => {
-		await visualizationProcess();
-	};
 </script>
 
-<Modal 
-isOpen={showModal} 
-title={$_('chat.modalTitle')} 
-onClose={closeModal}
->
-<p class="text-gray-700 dark:text-gray-300">
-  {$_('chat.modalText')}
-</p>
+<Modal isOpen={showModal} title={$_('chat.modalTitle')} onClose={closeModal}>
+	<p class="text-gray-700 dark:text-gray-300">
+		{$_('chat.modalText')}
+	</p>
 
-<div class="mt-4">
-  <p class="italic text-gray-500">{$_('chat.modalInformation')}</p>
-</div>
+	<div class="mt-4">
+		<p class="text-gray-500 italic">{$_('chat.modalInformation')}</p>
+	</div>
 
-<div class="flex justify-end p-4 border-t dark:border-gray-700">
-  <button
-    type="button"
-    class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-medium py-2 px-4 rounded mr-2 focus:outline-none focus:ring-2 focus:ring-gray-500"
-    onclick={closeModal}
-  >
-    Cancel
-  </button>
-  <button
-    type="button"
-    class="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-    onclick={() => goto(`/${page.params.slug}/survey?step=post`)}
-  >
-    {$_('chat.toSurvey')}
-  </button>
-</div>
+	<div class="flex justify-end border-t p-4 dark:border-gray-700">
+		<button
+			type="button"
+			class="mr-2 rounded bg-gray-300 px-4 py-2 font-medium text-gray-800 hover:bg-gray-400 focus:ring-2 focus:ring-gray-500 focus:outline-none"
+			onclick={closeModal}
+		>
+			Cancel
+		</button>
+		<button
+			type="button"
+			class="rounded bg-blue-500 px-4 py-2 font-medium text-white hover:bg-blue-600 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+			onclick={() => goto(`/${page.params.slug}/survey?step=post`)}
+		>
+			{$_('chat.toSurvey')}
+		</button>
+	</div>
 </Modal>
 
 <div class="flex h-screen flex-col items-center justify-end gap-2 bg-slate-900 p-4 text-white">
 	<h1 class="text-2xl font-bold">{$_('chat.title')}</h1>
 
-	<div bind:this={chatDiv} class="container h-full w-1/2 overflow-auto rounded-lg p-4">
+	<div bind:this={chatDiv} class="container h-full w-1/2 overflow-auto rounded-lg p-4 gap-4">
 		{#each messages as { type, message }}
 			<Message {type} {message} />
 		{/each}
@@ -276,6 +278,7 @@ onClose={closeModal}
 		<button
 			onclick={() => openModal()}
 			class="cursor-pointer rounded-lg bg-blue-500 p-2 text-white"
+			disabled={chatStep === 0 && $chatInformationStore.group === 'proposedMethod'}
 		>
 			{$_('chat.toSurvey')}
 		</button>

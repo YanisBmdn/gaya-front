@@ -2,6 +2,7 @@
     "footer": "All information provided on this site is intended for research purposes only. Any data stored is used solely for statistical analysis and will not be shared with or disclosed to third parties.",
     "loading": "Loading...",
     "currency": "$",
+    "end": "Thank you very much for contribution to our study.\u000A Your responses will help us understand how to better communicate climate data to the public !",
     "chat": {
         "title": "Climate science mentor",
         "vizError": "Sorry, there was an error generating the visualization.",
@@ -15,19 +16,19 @@
         "userInfo": "Tell Us About Yourself",
         "userInfoPlaceholder": "Share your background, skills, and interests...",
         "aboutYou": "About You",
-        "location": "Your location of interest",
+        "location": "Your location of interest (City, Country)",
         "locationPlaceholder": "Where do you live",
         "selectAgeGroup": "Select your age group",
         "ageGroup": "Your age group",
         "continueToChat": "Continue to scenario",
         "modalTitle": "Climate Decision-Making Study",
         "modalText": "Welcome! This study explores how climate data affects civic decision-making.\nYou'll be presented with a local climate issue requiring resource allocation. After sharing your initial thoughts, you'll view climate visualizations for your area and chat briefly with our AI assistant. Finally, you'll make a decision and explain your reasoning.\n The process takes about 15 minutes. Your anonymized responses will help advance climate communication research.\nClick \n \"Begin\" when ready.",
-        "modalInformation": "All responses are anonymized and for research purpose. Chat data will be permanently deleted upon exiting this session."
+        "modalInformation": "All responses are anonymized and for research purpose. Chat data will be permanently deleted upon exiting the chat session."
     },
     "survey": {
         "confidenceTitle": "How confident are you in your choices",
         "confidenceLabels": {
-            "1": "Not at all confident",
+            "1": "Not confident",
             "2": "Slightly confident",
             "3": "Moderately confident",
             "4": "Very confident",

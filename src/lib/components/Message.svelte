@@ -27,7 +27,8 @@
 	<div
 		class="max-w-[70%] rounded-lg p-2 bg-slate-300 shadow-md"
 	>
-		<p class="text-sm font-bold">{type}</p>
+		<p class="text-sm font-bold pb-2">{type}</p>
+		
 		<p class="text-sm">{message}</p>
 	</div>
 </div>
@@ -36,8 +37,8 @@
 	<div
 		class="max-w-[70%] rounded-lg p-2 bg-emerald-300 shadow-md"
 	>
-		<p class="text-sm font-bold">{type}</p>
-		<p class="text-sm">{@html message}</p>
+		<p class="text-sm font-bold pb-2">assistant</p>
+		<p class="text-sm text-justify mardown-content">{@html message}</p>
 	</div>
 </div>
 {:else if type === 'botImage'}
@@ -49,3 +50,100 @@
 	</div>
 </div>
 {/if}
+<style>
+	/* Markdown styles - using :global to target injected HTML */
+	:global(.markdown-content h1) {
+	  font-size: 1.25rem;
+	  font-weight: bold;
+	  margin-bottom: 0.5rem;
+	}
+	
+	:global(.markdown-content h2) {
+	  font-size: 1.125rem;
+	  font-weight: bold;
+	  margin-bottom: 0.5rem;
+	}
+	
+	:global(.markdown-content h3) {
+	  font-size: 1rem;
+	  font-weight: bold;
+	  margin-bottom: 0.5rem;
+	}
+	
+	:global(.markdown-content p) {
+	  margin-bottom: 0.5rem;
+	}
+	
+	:global(.markdown-content ul) {
+	  list-style-type: disc;
+	  padding-left: 1.25rem;
+	  margin-bottom: 0.5rem;
+	}
+	
+	:global(.markdown-content ol) {
+	  list-style-type: decimal;
+	  padding-left: 1.25rem;
+	  margin-bottom: 0.5rem;
+	}
+	
+	:global(.markdown-content li) {
+	  margin-bottom: 0.25rem;
+	}
+	
+	:global(.markdown-content pre) {
+	  background-color: #f3f4f6;
+	  padding: 0.5rem;
+	  border-radius: 0.25rem;
+	  margin-bottom: 0.5rem;
+	  overflow-x: auto;
+	}
+	
+	:global(.markdown-content code) {
+	  background-color: #f3f4f6;
+	  padding: 0.125rem 0.25rem;
+	  border-radius: 0.25rem;
+	  font-family: monospace;
+	  font-size: 0.875rem;
+	}
+	
+	:global(.markdown-content blockquote) {
+	  border-left: 4px solid #d1d5db;
+	  padding-left: 1rem;
+	  font-style: italic;
+	  margin-bottom: 0.5rem;
+	}
+	
+	:global(.markdown-content a) {
+	  color: #2563eb;
+	  text-decoration: underline;
+	}
+	
+	:global(.markdown-content table) {
+	  width: 100%;
+	  border-collapse: collapse;
+	  margin-bottom: 0.5rem;
+	}
+	
+	:global(.markdown-content th, .markdown-content td) {
+	  border: 1px solid #d1d5db;
+	  padding: 0.25rem 0.5rem;
+	  text-align: left;
+	}
+	
+	:global(.markdown-content th) {
+	  background-color: #f3f4f6;
+	  font-weight: bold;
+	}
+	
+	:global(.markdown-content hr) {
+	  border: 0;
+	  border-top: 1px solid #d1d5db;
+	  margin: 0.5rem 0;
+	}
+	
+	:global(.markdown-content img) {
+	  max-width: 100%;
+	  height: auto;
+	  border-radius: 0.25rem;
+	}
+  </style>
