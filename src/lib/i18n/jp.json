@@ -1,45 +1,45 @@
 {
-    "footer": "本サイトで提供されるすべての情報は、研究目的のみを目的としています。保存されたデータは統計分析のためにのみ使用され、第三者に開示または共有されることはありません。",
+    "footer": "本サイトで提供される全ての情報は研究目的のみを意図しています。保存されたデータは統計分析のためだけに使用され、第三者と共有または開示されることはありません。",
     "loading": "読み込み中...",
     "currency": "¥",
-    "end": "Thank you very much for contribution to our study.\u000A Your responses will help us understand how to better communicate climate data to the public !",
+    "end": "私たちの研究へのご協力、誠にありがとうございます。\nあなたの回答は、気候データを一般の方々により良く伝えるための理解に役立ちます！",
     "chat": {
-        "title": "気候科学メンター",
-        "vizError": "申し訳ありませんが、ビジュアライゼーションの生成中にエラーが発生しました。",
-        "chatPlaceholder": "自由に質問してください",
-        "toSurvey": "チャットを終了して最終アンケートに進む",
-        "modalTitle": "Leaving Session",
-        "modalText": "Once you leave, you'll be redirected to the last survey. Are you sure you want to exit?",
-        "modalInformation": "Your chat data will be permanently deleted upon exiting this session.",
-        "startChat": "Start chat !"
+      "title": "気候科学メンター",
+      "vizError": "申し訳ありませんが、可視化の生成中にエラーが発生しました。これには約25〜30秒かかります。",
+      "chatPlaceholder": "可視化やシナリオについて質問がありましたら、どうぞ！",
+      "toSurvey": "チャットを終了して最終アンケートに進む",
+      "modalTitle": "セッションを終了します",
+      "modalText": "退出すると、最後のアンケートにリダイレクトされます。本当に退出しますか？",
+      "modalInformation": "チャットデータはこのセッションを終了すると完全に削除されます。",
+      "startChat": "チャットを始める！"
     },
     "home": {
-        "userInfo": "あなたについて教えてください",
-        "userInfoPlaceholder": "あなたの経歴、スキル、興味を共有してください...",
-        "aboutYou": "あなたについて",
-        "location": "関心のある場所",
-        "locationPlaceholder": "どこに住んでいますか",
-        "selectAgeGroup": "年齢層を選択してください",
-        "ageGroup": "あなたの年齢層",
-        "continueToChat": "シナリオを続ける",
-        "modalTitle": "Climate Decision-Making Study",
-        "modalText": "Welcome! This study explores how climate data affects civic decision-making.\nYou'll be presented with a local climate issue requiring resource allocation. After sharing your initial thoughts, you'll view climate visualizations for your area and chat briefly with our AI assistant. Finally, you'll make a decision and explain your reasoning.\n The process takes about 15 minutes. Your anonymized responses will help advance climate communication research.\nClick "Begin" when ready.",
-        "modalInformation": "All responses are anonymized. Chat data will be permanently deleted when you exit this session. Your privacy is our priority."
+      "userInfo": "あなたについて教えてください",
+      "userInfoPlaceholder": "あなたの経歴、スキル、興味などを共有してください...",
+      "aboutYou": "あなたについて",
+      "location": "あなたの関心がある場所（市、国）",
+      "locationPlaceholder": "お住まいの場所",
+      "selectAgeGroup": "年齢層を選択してください",
+      "ageGroup": "あなたの年齢層",
+      "continueToChat": "シナリオに進む",
+      "modalTitle": "気候意思決定研究",
+      "modalText": "ようこそ！この研究は気候データが市民の意思決定にどのように影響するかを探るものです。\n資源配分を必要とする地域の気候問題が提示されます。最初の考えを共有した後、あなたの地域の気候可視化を閲覧し、AI アシスタントと簡単にチャットします。最後に、決定を下し、その理由を説明していただきます。\nプロセスは約15分かかります。あなたの匿名化された回答は、気候コミュニケーション研究の進展に役立ちます。\n準備ができたら「開始」をクリックしてください。",
+      "modalInformation": "すべての回答は匿名化され、研究目的に使用されます。チャットデータはチャットセッションを終了すると完全に削除されます。"
     },
     "survey": {
-        "confidenceTitle": "あなたの選択にどの程度自信がありますか",
-        "confidenceLabels": {
-            "1": "まったく自信がない",
-            "2": "少し自信がある",
-            "3": "ある程度自信がある",
-            "4": "とても自信がある",
-            "5": "非常に自信がある"
-        },
-        "totalBudget": "総予算",
-        "totalBudgetAllocated": "割り当てられた総予算",
-        "allocationTitle": "与えられた情報に基づいて、どのように予算を配分しますか？",
-        "allocationExplanation": "予算配分の説明",
-        "allocationExplanationPlaceholder": "予算配分の理由を説明してください...",
-        "submitSurvey": "予算配分を提出する"
+      "confidenceTitle": "あなたの選択にどの程度自信がありますか",
+      "confidenceLabels": {
+        "1": "自信がない",
+        "2": "少し自信がある",
+        "3": "適度に自信がある",
+        "4": "とても自信がある",
+        "5": "非常に自信がある"
+      },
+      "totalBudget": "総予算",
+      "totalBudgetAllocated": "配分された総予算",
+      "allocationTitle": "与えられた情報に基づいて、予算をどのように配分しますか？",
+      "allocationExplanation": "配分の説明",
+      "allocationExplanationPlaceholder": "予算配分の理由を説明してください...",
+      "submitSurvey": "予算配分を提出する"
     }
-}
+   }

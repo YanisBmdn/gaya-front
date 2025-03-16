@@ -1,9 +1,9 @@
-import { PASSWORD } from '$env/static/private';
+import { env } from '$env/dynamic/private';
 import { readFileSync } from 'fs';
 
 export async function POST({ request }) {
     const body = await request.json()
-    if (body.password === PASSWORD){
+    if (body.password === env.PASSWORD){
         try {
     
             // Read file contents as strings

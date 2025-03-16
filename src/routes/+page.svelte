@@ -124,7 +124,12 @@ onClose={closeModal}
 <div class="my-4">
   <p class="italic text-gray-500">{$_('home.modalInformation')}</p>
 </div>
-<div class="flex justify-end border-t p-2 dark:border-gray-700">
+<div class="flex justify-between border-t p-2 dark:border-gray-700">
+  <select bind:value={$locale}>
+    {#each $locales as locale}
+      <option value={locale}>{locale}</option>
+    {/each}
+  </select>
   <button
     type="button"
     class="rounded bg-blue-500 px-4 py-2 font-medium text-white hover:bg-blue-600 focus:ring-2 focus:ring-blue-500 focus:outline-none"
@@ -132,7 +137,7 @@ onClose={closeModal}
   >
     Begin
   </button>
-<div>
+</div>
 </Modal>
 
 

@@ -1,4 +1,4 @@
-import { BACKEND_URL } from '$env/static/private';
+import { env } from '$env/dynamic/private';
 import type { MessageType } from '$lib';
 
 export interface VisualizationRequest {
@@ -14,7 +14,7 @@ export interface VisualizationRequest {
 
 export const getVisualization = async (request: VisualizationRequest, language: string): Promise<string> => {
   try {
-    const response = await fetch(`${BACKEND_URL}/chat/visualization`, {
+    const response = await fetch(`${env.BACKEND_URL}/chat/visualization`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -50,7 +50,7 @@ export const chat = async (messages: MessageType, language: string): Promise<Res
   try {
     // API endpoint for the chat service
     // Make request to the external API
-    const response = await fetch(`${BACKEND_URL}/chat`, {
+    const response = await fetch(`${env.BACKEND_URL}/chat`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -91,7 +91,7 @@ export const chat = async (messages: MessageType, language: string): Promise<Res
 
 export const getImageDescription = async (image: Base64URLString, chat_id: string, complexity_level: number, scenario: string, options: string[], language: string): Promise<Response> => {
 	try {
-	  const response = await fetch(`${BACKEND_URL}/chat/description`, {
+	  const response = await fetch(`${env.BACKEND_URL}/chat/description`, {
 		method: 'POST',
 		headers: {
 		  'Content-Type': 'application/json',
@@ -142,7 +142,7 @@ export interface ScenarioResponse {
 
 export const getScenario = async (scenarioData: ScenarioData, language: string): Promise<ScenarioResponse> => {
   try {
-    const response = await fetch(`${BACKEND_URL}/scenario`, {
+    const response = await fetch(`${env.BACKEND_URL}/scenario`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -170,7 +170,7 @@ export const getComplexityLevel = async (
   ageGroup: string
 ): Promise<number> => {
   try {
-    const response = await fetch(`${BACKEND_URL}/chat/persona`, {
+    const response = await fetch(`${env.BACKEND_URL}/chat/persona`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
