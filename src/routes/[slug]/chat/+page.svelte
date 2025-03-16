@@ -14,11 +14,12 @@
 
 	let messages: Array<MessageType> = $state([]);
 	let inputValue: string = $state('');
-	let chatDiv: HTMLDivElement;
+	let chatDiv: HTMLDivElement = $state(null);
 	let isProcessing = $state(false);
 	let chatStep = $state(0);
 
 	let showModal = $state(false);
+	let chatStarted = $state(false);
 
 	function openModal() {
 		showModal = true;
@@ -39,7 +40,7 @@
 		}
 		await tick();
 
-		await new Promise((resolve) => setTimeout(resolve, 500)); // Give extra time for plotly to render
+		await new Promise((resolve) => setTimeout(resolve, 2000)); // Give extra time for plotly to render
 		// Find the last plotly element
 		const plotDivs = document.querySelectorAll('.js-plotly-plot');
 		const lastPlotDiv = plotDivs[plotDivs.length - 1];
@@ -120,7 +121,9 @@
 			body: JSON.stringify({
 				chat_id: chat_id,
 				image: image,
-				complexity_level: $chatInformationStore.complexityLevel
+				complexity_level: $chatInformationStore.complexityLevel,
+				scenario: $scenarioInformationStore.scenario,
+				options: $scenarioInformationStore.options
 			})
 		});
 
@@ -160,7 +163,7 @@
 		message: string = 'Provide a meaningful visualization for the given scenario and the topic of interest'
 	) => {
 		messages = [...messages, { type: 'botMessage', message: 'Generating new visualization...' }];
-		/*
+
 		const response = await fetch(`/api/visualization`, {
 			method: 'POST',
 			headers: {
@@ -178,29 +181,18 @@
 				options: $scenarioInformationStore.options
 			})
 		});
-		*/
 
-		const response = await fetch ('http://127.0.0.1:8000/test')
-		const temp = await response.json();
+		//const response = await fetch ('http://127.0.0.1:8000/test')
+		// const temp = await response.json();
 
 		chatDiv.scrollTop = chatDiv.scrollHeight;
-		//const json = await response.json();
+		const json = await response.json();
 		messages.pop();
 		await tick();
 
-		messages.push({ type: 'botImage', message: temp.visualization });
+		messages.push({ type: 'botImage', message: json });
 		await tick();
 	};
-
-	onMount(async () => {
-		if ($chatInformationStore.group === 'control') {
-			console.log('Control');
-			await visualizationProcess();
-		} else if ($chatInformationStore.group === 'proposedMethod') {
-			console.log('Proposed Method');
-			await visualizationProcess();
-		}
-	});
 
 	const submit = async (e: Event) => {
 		e.preventDefault();
@@ -241,46 +233,62 @@
 	</div>
 </Modal>
 
-<div class="flex h-screen flex-col items-center justify-end gap-2 bg-slate-900 p-4 text-white">
-	<h1 class="text-2xl font-bold">{$_('chat.title')}</h1>
-
-	<div bind:this={chatDiv} class="container h-full w-1/2 overflow-auto rounded-lg p-4 gap-4">
-		{#each messages as { type, message }}
-			<Message {type} {message} />
-		{/each}
-	</div>
-	{#if chatStep === 0 && $chatInformationStore.group === 'Proposed Method'}
+{#if !chatStarted}
+	<div
+		class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900 p-4 text-xl text-white"
+	>
 		<button
 			onclick={async () => {
-				chatStep = 1;
+				chatStarted = true;
 				await visualizationProcess();
 			}}
-			class="cursor-pointer rounded-lg bg-blue-500 p-2 text-white"
-			>Get next level visualization</button
+			class="rounded-lg bg-blue-500 p-2 text-white"
 		>
-	{/if}
-	<form onsubmit={submit} class="flex w-1/2">
-		<input
-			bind:value={inputValue}
-			type="text"
-			placeholder={$_('chat.chatPlaceholder')}
-			class="flex-1 rounded-l-lg border border-r-0 border-slate-400 p-2"
-			disabled={isProcessing}
-		/>
-		<button
-			type="submit"
-			class="cursor-pointer rounded-r-lg border border-emerald-500 bg-emerald-500 p-2 text-white"
-			disabled={isProcessing}
-		>
-			{isProcessing ? 'Processing...' : 'Chat'}
+			{$_('chat.startChat')}
 		</button>
+	</div>
+{:else}
+	<div class="flex h-screen flex-col items-center justify-end gap-2 bg-slate-900 p-4 text-white">
+		<h1 class="text-2xl font-bold">{$_('chat.title')}</h1>
 
-		<button
-			onclick={() => openModal()}
-			class="cursor-pointer rounded-lg bg-blue-500 p-2 text-white"
-			disabled={chatStep === 0 && $chatInformationStore.group === 'proposedMethod'}
-		>
-			{$_('chat.toSurvey')}
-		</button>
-	</form>
-</div>
+		<div bind:this={chatDiv} class="container h-full w-1/2 gap-4 overflow-auto rounded-lg p-4">
+			{#each messages as { type, message }}
+				<Message {type} {message} />
+			{/each}
+		</div>
+		{#if chatStep === 0 && $chatInformationStore.group === 'proposedMethod'}
+			<button
+				onclick={async () => {
+					chatStep = 1;
+					await visualizationProcess();
+				}}
+				class="cursor-pointer rounded-lg bg-blue-500 p-2 text-white"
+				>Get next level visualization</button
+			>
+		{/if}
+		<form onsubmit={submit} class="flex w-1/2">
+			<input
+				bind:value={inputValue}
+				type="text"
+				placeholder={$_('chat.chatPlaceholder')}
+				class="flex-1 rounded-l-lg border border-r-0 border-slate-400 p-2"
+				disabled={isProcessing}
+			/>
+			<button
+				type="submit"
+				class="cursor-pointer rounded-r-lg border border-emerald-500 bg-emerald-500 p-2 text-white"
+				disabled={isProcessing}
+			>
+				{isProcessing ? 'Processing...' : 'Chat'}
+			</button>
+
+			<button
+				onclick={() => openModal()}
+				class="cursor-pointer rounded-lg bg-blue-500 p-2 text-white"
+				disabled={chatStep === 0 && $chatInformationStore.group === 'proposedMethod'}
+			>
+				{$_('chat.toSurvey')}
+			</button>
+		</form>
+	</div>
+{/if}

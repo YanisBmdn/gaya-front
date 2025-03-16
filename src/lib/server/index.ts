@@ -89,7 +89,7 @@ export const chat = async (messages: MessageType, language: string): Promise<Res
   }
 };
 
-export const getImageDescription = async (image: Base64URLString, chat_id: string, complexity_level: number, language: string): Promise<Response> => {
+export const getImageDescription = async (image: Base64URLString, chat_id: string, complexity_level: number, scenario: string, options: string[], language: string): Promise<Response> => {
 	try {
 	  const response = await fetch(`${BACKEND_URL}/chat/description`, {
 		method: 'POST',
@@ -97,7 +97,7 @@ export const getImageDescription = async (image: Base64URLString, chat_id: strin
 		  'Content-Type': 'application/json',
       'Accept-Language': language
 		},
-		body: JSON.stringify({ chat_id, image, complexity_level })
+		body: JSON.stringify({ chat_id, image, complexity_level, scenario, options })
 	  });
 	  
 	  if (response.status !== 200) {

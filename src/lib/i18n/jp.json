@@ -10,7 +10,8 @@
         "toSurvey": "チャットを終了して最終アンケートに進む",
         "modalTitle": "Leaving Session",
         "modalText": "Once you leave, you'll be redirected to the last survey. Are you sure you want to exit?",
-        "modalInformation": "Your chat data will be permanently deleted upon exiting this session."
+        "modalInformation": "Your chat data will be permanently deleted upon exiting this session.",
+        "startChat": "Start chat !"
     },
     "home": {
         "userInfo": "あなたについて教えてください",

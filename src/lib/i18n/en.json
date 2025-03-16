@@ -5,12 +5,13 @@
     "end": "Thank you very much for contribution to our study.\u000A Your responses will help us understand how to better communicate climate data to the public !",
     "chat": {
         "title": "Climate science mentor",
-        "vizError": "Sorry, there was an error generating the visualization.",
+        "vizError": "Sorry, there was an error generating the visualization. This takes approximately to 25 to 30 seconds.",
         "chatPlaceholder": "Ask any questions about the visualization or the scenario !",
         "toSurvey": "End chat and take final survey",
         "modalTitle": "Leaving Session",
         "modalText": "Once you leave, you'll be redirected to the last survey. Are you sure you want to exit?",
-        "modalInformation": "Your chat data will be permanently deleted upon exiting this session."
+        "modalInformation": "Your chat data will be permanently deleted upon exiting this session.",
+        "startChat": "Start chat !"
     },
     "home": {
         "userInfo": "Tell Us About Yourself",
