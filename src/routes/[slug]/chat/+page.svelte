@@ -162,7 +162,7 @@
 	const getNewVisualization = async (
 		message: string = 'Provide a meaningful visualization for the given scenario and the topic of interest'
 	) => {
-		messages = [...messages, { type: 'botMessage', message: 'Generating new visualization...' }];
+		messages = [...messages, { type: 'botMessage', message: 'Generating new visualization... This may take up to 30 seconds' }];
 
 		const response = await fetch(`/api/visualization`, {
 			method: 'POST',
@@ -243,7 +243,7 @@
 		class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-slate-900 p-4 text-xl text-white w-full h-full text-center"
 	>
 		<p class="w-1/3 pb-4">
-			{ $chatInformationStore.group === "proposedMethod" ? $_('chat.prepareChatProposed') : $_('prepareChatControl')}
+			{ $chatInformationStore.group === "proposedMethod" ? $_('chat.prepareChatProposed') : $_('chat.prepareChatControl')}
 		</p>
 		<button
 			onclick={async () => {

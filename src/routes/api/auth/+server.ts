@@ -1,5 +1,10 @@
 import { env } from '$env/dynamic/private';
 import { readFileSync } from 'fs';
+import path from 'path';
+
+const DATA_DIR = '/data';
+const PRE_SURVEY_FILE = path.join(DATA_DIR, 'presurvey.jsonl');
+const POST_SURVEY_PATH = path.join(DATA_DIR, 'postsurvey.jsonl');
 
 export async function POST({ request }) {
     const body = await request.json()
@@ -8,8 +13,8 @@ export async function POST({ request }) {
     
             // Read file contents as strings
             console.log(process.cwd());
-            const file1Content = readFileSync('src/lib/server/presurvey.jsonl', 'utf-8');
-            const file2Content = readFileSync('src/lib/server/postsurvey.jsonl', 'utf-8');
+            const file1Content = readFileSync(PRE_SURVEY_FILE, 'utf-8');
+            const file2Content = readFileSync(POST_SURVEY_PATH, 'utf-8');
             
             // Return both files in a JSON response
             return new Response(JSON.stringify({

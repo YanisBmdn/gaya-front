@@ -2,7 +2,7 @@
     "footer": "All information provided on this site is intended for research purposes only. Any data stored is used solely for statistical analysis and will not be shared with or disclosed to third parties.",
     "loading": "Loading...",
     "currency": "$",
-    "cancel": "Cancel",
+    "cancel": "Cancel",   
     "end": "Thank you very much for contribution to our study.\u000A Your responses will help us understand how to better communicate climate data to the public !",
     "endSurvey": "Please fill the user experience form !",
     "chat": {
@@ -47,7 +47,7 @@
         "allocationExplanationPlaceholder": "Explain the reasoning behind your budget allocation...",
         "submitSurvey": "Submit budget allocation",
         "modalTitle": "Decision making scenario",
-        "modalInformation": "After clicking \"Continue\" you'll be taken on a survey about this scenario. Don't worry it will still be available for you to read.",
+        "modalInformation": "After clicking \"Start\" you'll be taken on a survey about this scenario. Don't worry it will still be available for you to read.",
         "begin": "Start budget allocation"
     }
 }

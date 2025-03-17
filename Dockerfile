@@ -15,4 +15,7 @@ COPY --from=build /app/build ./build
 COPY --from=build /app/package*.json ./
 COPY --from=build /app/node_modules ./node_modules
 
+RUN mkdir -p /data && chown -R node:node /data
+USER node
+
 CMD ["node", "build"]

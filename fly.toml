@@ -19,5 +19,9 @@ primary_region = 'sea'
 [[vm]]
   memory = '1gb'
   cpu_kind = 'shared'
-  cpus = 1
+  cpus = 2
   memory_mb = 1024
+
+[mounts]
+  source = "research"
+  destination = "/data"

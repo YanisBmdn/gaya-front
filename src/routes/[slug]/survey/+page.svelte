@@ -245,9 +245,9 @@
 
     <button 
         onclick={handleSubmit}
-        class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
-        disabled={$totalAllocated > ($scenarioInformationStore.budget || 0)}
+        class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 {$totalAllocated != $scenarioInformationStore.budget ? 'cursor-not-allowed bg-gray-500 hover:bg-gray-600' : ''}"
+        disabled={$totalAllocated != $scenarioInformationStore.budget}
     >
-        {$_('survey.submitSurvey')}
+        {$totalAllocated == $scenarioInformationStore.budget ? $_('survey.submitSurvey') : "Please allocate the full budget"}
     </button>
 </div>

@@ -30,21 +30,39 @@ export interface BudgetDistributionData {
     percentage: number;
 }
 
-const PRE_SURVEY_FILE = path.resolve('src/lib/server/presurvey.jsonl');
-const POST_SURVEY_PATH = path.resolve('src/lib/server/postsurvey.jsonl');
+const DATA_DIR = '/data';
+const PRE_SURVEY_FILE = path.join(DATA_DIR, 'presurvey.jsonl');
+const POST_SURVEY_PATH = path.join(DATA_DIR, 'postsurvey.jsonl');
 
+// Ensure directories exist before using them
+async function ensureDirectoryExists(filePath: string) {
+    const dirname = path.dirname(filePath);
+    try {
+      await fs.access(dirname);
+    } catch (error) {
+      await fs.mkdir(dirname, { recursive: true });
+    }
+  }
+  
 export async function appendToJSONL(data: SurveyData, step: "pre" | "post"): Promise<void> {
-    try{
-        const JSONL_PATH = step === 'pre' ? PRE_SURVEY_FILE : POST_SURVEY_PATH;
-        // Read the file if it exists
-        let existingData: string[] = [];
+    const JSONL_PATH = step === 'pre' ? PRE_SURVEY_FILE : POST_SURVEY_PATH;
+    
+    try {
+        ensureDirectoryExists(DATA_DIR);
+        
+        // Check if file exists, create it if it doesn't
         try {
-            const file = step === 'pre' ? PRE_SURVEY_FILE : POST_SURVEY_PATH;
-            const fileContent = await fs.readFile(file, 'utf-8');
-            existingData = fileContent.trim().split('\n');
-        } catch (err : any) {
-            if (err.code !== 'ENOENT') throw err; // Ignore "file not found" error
+            await fs.access(JSONL_PATH);
+        } catch (error) {
+            // Create empty file if it doesn't exist
+            await fs.writeFile(JSONL_PATH, '', { encoding: 'utf-8' });
+            console.log(`Created new file at ${JSONL_PATH}`);
         }
+        
+        // Read the file
+        let existingData: string[] = [];
+        const fileContent = await fs.readFile(JSONL_PATH, 'utf-8');
+        existingData = fileContent.trim() ? fileContent.trim().split('\n') : [];
 
         // Check if the ID already exists
         if (existingData.some(line => {
@@ -64,6 +82,6 @@ export async function appendToJSONL(data: SurveyData, step: "pre" | "post"): Pro
         console.log(`Entry with ID ${data.id} added.`);
     } catch (err) {
         console.error('Error appending to JSONL:', err);
+        throw err; // Re-throw to allow calling code to handle the error
     }
 }
-
