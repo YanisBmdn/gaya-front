@@ -185,6 +185,11 @@
 		//const response = await fetch ('http://127.0.0.1:8000/test')
 		// const temp = await response.json();
 
+		if (!response.ok) {
+			messages.push({ type: 'botMessage', message: 'There was an error getting the visualization.' });
+			console.error(`API Error (Status ${response.status})`);
+			return;
+		}
 		chatDiv.scrollTop = chatDiv.scrollHeight;
 		const json = await response.json();
 		messages.pop();
@@ -221,7 +226,7 @@
 			class="mr-2 rounded bg-gray-300 px-4 py-2 font-medium text-gray-800 hover:bg-gray-400 focus:ring-2 focus:ring-gray-500 focus:outline-none"
 			onclick={closeModal}
 		>
-			Cancel
+			{$_('cancel')}
 		</button>
 		<button
 			type="button"
@@ -235,14 +240,17 @@
 
 {#if !chatStarted}
 	<div
-		class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900 p-4 text-xl text-white"
+		class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-slate-900 p-4 text-xl text-white w-full h-full text-center"
 	>
+		<p class="w-1/3 pb-4">
+			{ $chatInformationStore.group === "proposedMethod" ? $_('chat.prepareChatProposed') : $_('prepareChatControl')}
+		</p>
 		<button
 			onclick={async () => {
 				chatStarted = true;
 				await visualizationProcess();
 			}}
-			class="rounded-lg bg-blue-500 p-2 text-white"
+			class="mt-4 rounded-lg bg-blue-500 p-2 text-white"
 		>
 			{$_('chat.startChat')}
 		</button>
@@ -256,14 +264,14 @@
 				<Message {type} {message} />
 			{/each}
 		</div>
-		{#if chatStep === 0 && $chatInformationStore.group === 'proposedMethod'}
+		{#if chatStep === 0 && $chatInformationStore.group === 'proposedMethod' && !isProcessing}
 			<button
 				onclick={async () => {
 					chatStep = 1;
 					await visualizationProcess();
 				}}
 				class="cursor-pointer rounded-lg bg-blue-500 p-2 text-white"
-				>Get next level visualization</button
+				>{$_('chat.getNextViz')}</button
 			>
 		{/if}
 		<form onsubmit={submit} class="flex w-1/2">
@@ -285,7 +293,6 @@
 			<button
 				onclick={() => openModal()}
 				class="cursor-pointer rounded-lg bg-blue-500 p-2 text-white"
-				disabled={chatStep === 0 && $chatInformationStore.group === 'proposedMethod'}
 			>
 				{$_('chat.toSurvey')}
 			</button>

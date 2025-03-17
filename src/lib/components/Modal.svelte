@@ -24,7 +24,7 @@
  on:keydown={(e) => e.key === 'Escape' && handleEscape(e)}
  >
  <div
- class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full max-h-screen overflow-auto"
+ class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-1/3 w-full max-h-screen overflow-auto"
  role="dialog"
  aria-modal="true"
  aria-labelledby="modal-title"

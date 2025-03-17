@@ -1,22 +1,17 @@
 import path from 'path';
 import fs from 'fs/promises';
 
-const topicOfInterest = ['Temperatures', 'Air Pollution']
-const userGroup = ['control','proposedMethod']
-
-let topicIndex = 0;
-let groupIndex = 0;
+const topicOfInterest = ['Temperatures', 'Air Pollution'];
+const userGroup = ['control', 'proposedMethod'];
 
 export const getTopicOfInterest = () => {
-    const topic = topicOfInterest[topicIndex];
-    topicIndex = (topicIndex + 1) % topicOfInterest.length;
-    return topic;
+    const randomIndex = Math.floor(Math.random() * topicOfInterest.length);
+    return topicOfInterest[randomIndex];
 }
 
 export const getUserGroup = () => {
-    const group = userGroup[groupIndex];
-    groupIndex = (groupIndex + 1) % userGroup.length;
-    return group;
+    const randomIndex = Math.floor(Math.random() * userGroup.length);
+    return userGroup[randomIndex];
 }
 
 export interface SurveyData {

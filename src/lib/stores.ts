@@ -1,6 +1,7 @@
 import type { ScenarioResponse } from '$lib/server'
 import { writable, type Writable } from 'svelte/store'
 import { browser } from '$app/environment';
+import type { SurveyData } from './server/dataProcessing';
 
 const createPersistentStore = (key: string, initialValue: any) => {
     // Only access localStorage in the browser
@@ -36,3 +37,5 @@ interface ChatInformation {
 }
 
 export const chatInformationStore: Writable<ChatInformation> = createPersistentStore('chatInformation', {})
+
+export const preSurveyResponses: Writable<SurveyData> = createPersistentStore('preSurveyResponses', {})

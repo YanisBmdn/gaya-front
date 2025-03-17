@@ -15,5 +15,5 @@ export async function POST({ request }) {
 export async function GET({ params }) {
     const topic = getTopicOfInterest();
     const group = getUserGroup();
-    return json({ topic, group: 'proposedMethod' });
+    return json({ topic, group });
 }

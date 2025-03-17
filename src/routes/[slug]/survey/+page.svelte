@@ -1,15 +1,26 @@
 <script lang="ts">
     import { writable, derived } from 'svelte/store';
     import { page } from '$app/state'; // Changed from '$app/state' to '$app/stores'
-    import { scenarioInformationStore, chatInformationStore } from '$lib/stores';
+    import { scenarioInformationStore, chatInformationStore, preSurveyResponses } from '$lib/stores';
 	import { goto } from '$app/navigation';
     import { _ } from 'svelte-i18n';
     import { locale } from 'svelte-i18n';
+    import Modal from '$lib/components/Modal.svelte';
 
     // Create a store for allocations with proper initialization
     const allocations = writable([]);
 
     const surveyStep = page.url.searchParams.get('step');
+
+    let showModal = true;
+
+	function openModal() {
+		showModal = true;
+	}
+
+	function closeModal() {
+		showModal = false;
+	}
     
     // Initialize the allocations when scenarioInformationStore is loaded
     $: if ($scenarioInformationStore.options && $scenarioInformationStore.options.length > 0) {
@@ -90,6 +101,22 @@
             body: JSON.stringify({...submissionData})
         });
 
+        if(surveyStep === "pre") {
+            preSurveyResponses.set({
+                id: page.params.slug, // Fixed from page.params to $page.params
+                budget: $scenarioInformationStore.budget,
+                totalAllocated: $totalAllocated,
+                budgetDistribution: $allocations.map((amount, index) => ({
+                    category: $scenarioInformationStore.options[index],
+                    amount,
+                    percentage: percentages[index]
+                })),
+                confidence: $confidence,
+                explanation: $explanation,
+                group: $chatInformationStore.group,
+            })
+        }
+
         if (response.ok) {
             surveyStep === "pre" ? goto(`/${page.params.slug}/chat`) : goto('/end')
         } else {
@@ -105,7 +132,31 @@
         { value: 5, label:  $_('survey.confidenceLabels.5') }
     ];
 </script>
+{#if surveyStep==="pre"}
+    <Modal 
+    isOpen={showModal} 
+    title={$_('survey.modalTitle')} 
+    onClose={closeModal}
+    >
+    <p class="text-gray-700 dark:text-gray-300">
+    {$scenarioInformationStore.scenario || 'Loading scenario...'}
+    </p>
 
+    <!-- You can add any other content here -->
+    <div class="my-4">
+    <p class="italic text-gray-500">{$_('survey.modalInformation')}</p>
+    </div>
+    <div class="flex justify-between border-t p-2 dark:border-gray-700">
+    <button
+        type="button"
+        class="rounded bg-blue-500 px-4 py-2 font-medium text-white hover:bg-blue-600 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+        onclick={closeModal}
+    >
+        {$_('survey.begin')}
+    </button>
+    </div>
+    </Modal>
+{/if}
 <div class="flex flex-col items-center justify-center gap-8 p-4 bg-slate-900">
     <p class="w-1/2">{$scenarioInformationStore.scenario || 'Loading scenario...'}</p>
     <h2 class="text-2xl font-bold mb-6">{$_("survey.allocationTitle")}</h2>
@@ -140,13 +191,17 @@
                         max="100"
                         step="2"
                         bind:value={percentages[index]}
-                        on:input={(e) => percentages[index] = updateAllocationByPercentage(index, parseInt(e.target.value))}
+                        oninput={(e) => percentages[index] = updateAllocationByPercentage(index, parseInt(e.target.value))}
                         class="flex-grow"
                         disabled={$totalAllocated >= ($scenarioInformationStore.budget || 0) && $allocations[index] === 0}
                     />
                     <span class="w-42 text-right">
                         ${($allocations[index] || 0).toLocaleString()} 
                         ({percentages[index] || 0}%)
+                        
+                        {#if surveyStep === "post"}
+                            previous : {$preSurveyResponses.budgetDistribution[index].percentage}%
+                        {/if}
                     </span>
                 </div>
             {/each}
@@ -189,7 +244,7 @@
     </div>
 
     <button 
-        on:click={handleSubmit}
+        onclick={handleSubmit}
         class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
         disabled={$totalAllocated > ($scenarioInformationStore.budget || 0)}
     >
