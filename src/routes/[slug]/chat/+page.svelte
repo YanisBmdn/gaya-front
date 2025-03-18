@@ -19,7 +19,7 @@
 	let isOver = $state(false);
 	let chatStep = $state(0);
 
-	const MAX_MESSAGES = 2;
+	const MAX_MESSAGES = 12;
 
 	let showModal = $state(false);
 	let chatStarted = $state(false);
