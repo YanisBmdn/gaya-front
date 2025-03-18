@@ -293,12 +293,12 @@
 				bind:value={inputValue}
 				type="text"
 				placeholder={$_('chat.chatPlaceholder')}
-				class="flex-1 rounded-l-lg border border-r-0 p-2 {isProcessing || isOver ? 'bg-gray-500 border-gray-500' : 'border-slate-400'}"
+				class="flex-1 rounded-l-lg border border-r-0 p-2 {isOver ? 'bg-gray-500 border-gray-500' : 'border-slate-400'}"
 				disabled={isProcessing || isOver}
 			/>
 			<button
 				type="submit"
-				class="cursor-pointer rounded-r-lg border p-2 text-white {isProcessing || isOver ? 'bg-gray-500 border-gray-500' : 'border-emerald-500 bg-emerald-500'}"
+				class="cursor-pointer rounded-r-lg border p-2 text-white {isOver ? 'bg-gray-500 border-gray-500' : 'border-emerald-500 bg-emerald-500'}"
 				disabled={isProcessing || isOver}
 			>
 				{isProcessing ? 'Processing...' : 'Chat'}
