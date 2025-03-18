@@ -34,6 +34,7 @@ interface ChatInformation {
     topicOfInterest: string;
     complexityLevel: number;
     group: 'control' | 'proposedMethod';
+    messageCount: number;
 }
 
 export const chatInformationStore: Writable<ChatInformation> = createPersistentStore('chatInformation', {})

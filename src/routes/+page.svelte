@@ -91,6 +91,7 @@
               topicOfInterest: topicData.topic,
               group: topicData.group,
               complexityLevel: complexityLevel,
+              messageCount: 0
           });
           
           // Navigate to survey page

@@ -30,7 +30,7 @@ export interface BudgetDistributionData {
     percentage: number;
 }
 
-const DATA_DIR = '/data';
+const DATA_DIR = 'src/lib/server/';
 const PRE_SURVEY_FILE = path.join(DATA_DIR, 'presurvey.jsonl');
 const POST_SURVEY_PATH = path.join(DATA_DIR, 'postsurvey.jsonl');
 

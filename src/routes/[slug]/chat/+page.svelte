@@ -16,7 +16,10 @@
 	let inputValue: string = $state('');
 	let chatDiv: HTMLDivElement = $state(null);
 	let isProcessing = $state(false);
+	let isOver = $state(false);
 	let chatStep = $state(0);
+
+	const MAX_MESSAGES = 2;
 
 	let showModal = $state(false);
 	let chatStarted = $state(false);
@@ -31,6 +34,13 @@
 
 	const visualizationProcess = async () => {
 		isProcessing = true;
+		if ($chatInformationStore.messageCount >= MAX_MESSAGES){
+			messages = [...messages, { type: 'botMessage', message: "You have reached the usage limit. Thank you for participating in this research !!" }];
+			isOver = true;
+			await tick();
+			isProcessing = false;
+			return;
+		}
 		if (chatStep === 1) {
 			await getNewVisualization(
 				'Provide a followup visualization for the given scenario and the topic of interest'
@@ -101,6 +111,7 @@
 			} catch (error) {
 				console.error('Error reading stream:', error);
 			}
+			$chatInformationStore.messageCount += 1;
 		} finally {
 			isProcessing = false;
 			await tick();
@@ -111,7 +122,7 @@
 	const getVisualizationDescription = async (chat_id: string, image: string) => {
 		messages = [...messages, { type: 'botMessage', message: 'Generating description...' }];
 		await tick();
-
+		$chatInformationStore.messageCount += 1;
 		const response = await fetch(`/api/description`, {
 			method: 'POST',
 			headers: {
@@ -163,7 +174,7 @@
 		message: string = 'Provide a meaningful visualization for the given scenario and the topic of interest'
 	) => {
 		messages = [...messages, { type: 'botMessage', message: 'Generating new visualization... This may take up to 30 seconds' }];
-
+		$chatInformationStore.messageCount += 1;
 		const response = await fetch(`/api/visualization`, {
 			method: 'POST',
 			headers: {
@@ -182,8 +193,6 @@
 			})
 		});
 
-		//const response = await fetch ('http://127.0.0.1:8000/test')
-		// const temp = await response.json();
 
 		if (!response.ok) {
 			messages.push({ type: 'botMessage', message: 'There was an error getting the visualization.' });
@@ -203,8 +212,13 @@
 		e.preventDefault();
 		if (inputValue.trim() === '') return;
 		if (isProcessing) return;
-
+		if($chatInformationStore.messageCount >= MAX_MESSAGES){
+			messages = [...messages, { type: 'botMessage', message: "You have reached the usage limit. Thank you for participating in this research !!" }]
+			isOver = true;
+			return;
+		}
 		isProcessing = true;
+
 
 		const userMessage = inputValue.trim();
 		getSimpleChat(userMessage);
@@ -279,13 +293,13 @@
 				bind:value={inputValue}
 				type="text"
 				placeholder={$_('chat.chatPlaceholder')}
-				class="flex-1 rounded-l-lg border border-r-0 border-slate-400 p-2"
-				disabled={isProcessing}
+				class="flex-1 rounded-l-lg border border-r-0 p-2 {isProcessing || isOver ? 'bg-gray-500 border-gray-500' : 'border-slate-400'}"
+				disabled={isProcessing || isOver}
 			/>
 			<button
 				type="submit"
-				class="cursor-pointer rounded-r-lg border border-emerald-500 bg-emerald-500 p-2 text-white"
-				disabled={isProcessing}
+				class="cursor-pointer rounded-r-lg border p-2 text-white {isProcessing || isOver ? 'bg-gray-500 border-gray-500' : 'border-emerald-500 bg-emerald-500'}"
+				disabled={isProcessing || isOver}
 			>
 				{isProcessing ? 'Processing...' : 'Chat'}
 			</button>
